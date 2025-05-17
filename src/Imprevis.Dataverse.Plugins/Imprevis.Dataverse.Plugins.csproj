@@ -4,6 +4,7 @@
     <AssemblyName>Imprevis.Dataverse.Plugins</AssemblyName>
     <RootNamespace>Imprevis.Dataverse.Plugins</RootNamespace>
     <TargetFramework>net462</TargetFramework>
+    <DebugType>embedded</DebugType>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Imprevis.Dataverse.Plugins.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

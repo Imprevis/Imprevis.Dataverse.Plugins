@@ -6,17 +6,17 @@
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class RegistrationAttribute : Attribute
     {
-        public int Mode { get; set; }
-        public int Stage { get; set; }
-        public string Message { get; set; }
-        public string EntityName { get; set; }
+        private readonly int mode;
+        private readonly int stage;
+        private readonly string message;
+        private readonly string entityName;
 
         public RegistrationAttribute(int mode, int stage, string message, string entityName = null)
         {
-            Mode = mode;
-            Stage = stage;
-            Message = message;
-            EntityName = entityName;
+            this.mode = mode;
+            this.stage = stage;
+            this.message = message;
+            this.entityName = entityName;
         }
 
         public bool IsValid(IPluginExecutionContext executionContext)
@@ -26,7 +26,7 @@
             var message = executionContext.MessageName;
             var entityName = executionContext.PrimaryEntityName;
 
-            return Stage == stage && Message == message && EntityName == entityName && Mode == mode;
+            return this.mode == mode && this.stage == stage && this.message == message && this.entityName == entityName;
         }
     }
 }

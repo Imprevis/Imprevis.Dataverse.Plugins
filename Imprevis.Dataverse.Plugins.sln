@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CB85DD5A-508F-4447-A22E-A36D8418B97E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "src\Imprevis.Dataverse.Plugins\Imprevis.Dataverse.Plugins.csproj", "{1A5E55AA-E1DF-459C-8CCB-D4318B5F2527}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imprevis.Dataverse.Plugins", "src\Imprevis.Dataverse.Plugins\Imprevis.Dataverse.Plugins.csproj", "{1A5E55AA-E1DF-459C-8CCB-D4318B5F2527}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
