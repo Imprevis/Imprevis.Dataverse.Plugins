@@ -1,0 +1,22 @@
+name: Release to NuGet.org
+
+on:
+  release:
+    types: [published]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+    - name: .NET Build
+      run: dotnet build -c Release
+    - name: .NET Test
+      run: dotnet test -c Release --no-build
+    - name: .NET Pack
+      run: dotnet pack -c Release --no-build -p:PackageVersion=${{ github.event.release.tag_name }} -p:PackageReleaseNotes="${{ github.event.release.body }}"
+    - name: .NET Push
+      run: dotnet nuget push src/**/*.nupkg --source ${{ vars.NUGET_API_URL }} --api-key ${{ secrets.NUGET_API_KEY }}
