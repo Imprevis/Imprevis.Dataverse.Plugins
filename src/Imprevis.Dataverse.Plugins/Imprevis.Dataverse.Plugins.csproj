@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Imprevis.Dataverse.Plugins</AssemblyName>
+    <RootNamespace>Imprevis.Dataverse.Plugins</RootNamespace>
+    <TargetFramework>net462</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Imprevis.Dataverse.Plugins.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>Imprevis</Company>
+    <Authors>Imprevis</Authors>
+    <Description></Description>
+    <Copyright>© Imprevis LLC</Copyright>
+    <PackageProjectUrl>https://github.com/Imprevis/Imprevis.Dataverse.Plugins</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Imprevis/Imprevis.Dataverse.Plugins</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.59" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
+    <PackageReference Include="System.Text.Json" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
