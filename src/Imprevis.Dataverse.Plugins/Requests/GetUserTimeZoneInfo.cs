@@ -4,7 +4,7 @@
     using System;
     using System.Linq;
 
-    public class GetUserTimeZoneInfo : IDataverseRequest<TimeZoneInfo>
+    internal class GetUserTimeZoneInfo : IDataverseRequest<TimeZoneInfo>
     {
         public TimeZoneInfo Execute(IDataverseService service, ILoggingService logger)
         {

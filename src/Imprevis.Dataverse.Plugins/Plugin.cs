@@ -1,7 +1,6 @@
 namespace Imprevis.Dataverse.Plugins
 {
     using System;
-    using System.Text.Json;
     using Imprevis.Dataverse.Plugins.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Xrm.Sdk;
@@ -10,23 +9,40 @@ namespace Imprevis.Dataverse.Plugins
 
     public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
     {
+        private readonly string unsecure;
+        private readonly string secure;
+
+        public Plugin() { }
+
+        public Plugin(string unsecure) : this()
+        {
+            this.unsecure = unsecure;
+        }
+
+        public Plugin(string unsecure, string secure) : this(unsecure)
+        {
+            this.secure = secure;
+        }
+
         public void Execute(IServiceProvider serviceProvider)
         {
             var services = new ServiceCollection();
 
-            services.AddSingleton(p => serviceProvider.Get<IOrganizationServiceFactory>());
-            services.AddSingleton(p => serviceProvider.Get<IPluginExecutionContext>());
-            services.AddSingleton(p => serviceProvider.Get<ILogger>());
-            services.AddSingleton(p => serviceProvider.Get<ITracingService>());
-            services.AddSingleton(p => serviceProvider.Get<IServiceEndpointNotificationService>());
+            services.AddScoped(p => serviceProvider.Get<IOrganizationServiceFactory>());
+            services.AddScoped(p => serviceProvider.Get<IPluginExecutionContext>());
+            services.AddScoped(p => serviceProvider.Get<ILogger>());
+            services.AddScoped(p => serviceProvider.Get<ITracingService>());
+            services.AddScoped(p => serviceProvider.Get<IServiceEndpointNotificationService>());
 
-            services.AddSingleton<ICacheService, MemoryCacheService>();
-            services.AddSingleton<IDataverseServiceFactory, DataverseServiceFactory>();
-            services.AddSingleton<IDateTimeService, CurrentDateTimeService>();
-            services.AddSingleton<IHttpService, HttpService>(); 
-            services.AddSingleton<ILoggingService, LoggingService>();
+            services.AddScoped<ICacheService, MemoryCacheService>();
+            services.AddScoped<IDataverseServiceFactory, DataverseServiceFactory>();
+            services.AddScoped<IDateTimeService, CurrentDateTimeService>();
+            services.AddScoped<IHttpService, HttpService>();
+            services.AddScoped<ILoggingService, LoggingService>();
+            services.AddScoped<IPluginConfigService>(p => new PluginConfigService(unsecure, secure));
+            services.AddScoped<IPluginRegistrationService, PluginRegistrationService>();
 
-            services.AddSingleton(typeof(TRunner));
+            services.AddTransient(typeof(TRunner));
 
             ConfigureServices(services);
 
@@ -36,14 +52,15 @@ namespace Imprevis.Dataverse.Plugins
 
             try
             {
-                var executionContext = provider.Get<IPluginExecutionContext>();
-
-                if (!HasValidRegistration(executionContext))
-                {
-                    throw new InvalidPluginExecutionException($"Plugin '{this.GetType().FullName}' is not registered correctly.");
-                }
-
                 logger.LogDebug("Starting execution.");
+
+                var pluginType = GetType();
+                
+                var registrationService = provider.Get<IPluginRegistrationService>();
+                if (!registrationService.IsValid(pluginType))
+                {
+                    throw new InvalidPluginExecutionException($"Plugin '{pluginType.FullName}' is not registered correctly.");
+                }
 
                 var runner = provider.GetService<TRunner>();
                 runner.Execute();
@@ -66,50 +83,5 @@ namespace Imprevis.Dataverse.Plugins
         }
 
         public virtual void ConfigureServices(IServiceCollection services) { }
-
-        private bool HasValidRegistration(IPluginExecutionContext executionContext)
-        {
-            var type = GetType();
-
-            var attributes = type.GetCustomAttributes(typeof(RegistrationAttribute), true);
-
-            // Don't force user to use Registrations. If there are none, consider it valid.
-            if (attributes.Length == 0)
-            {
-                return true;
-            }
-
-            // Check if a Registration matches the current execution context.
-            foreach (var attribute in attributes)
-            {
-                var isValid = (attribute as RegistrationAttribute).IsValid(executionContext);
-                if (isValid)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    public abstract class Plugin<TRunner, TUnsecure> : Plugin<TRunner> where TRunner : IPluginRunner
-    {
-        public TUnsecure UnsecureConfig { get; private set; }
-
-        public Plugin(string unsecure) : base()
-        {
-            UnsecureConfig = JsonSerializer.Deserialize<TUnsecure>(unsecure);
-        }
-    }
-
-    public abstract class Plugin<TRunner, TUnsecure, TSecure> : Plugin<TRunner, TUnsecure> where TRunner : IPluginRunner
-    {
-        public TSecure SecureConfig { get; private set; }
-
-        public Plugin(string unsecure, string secure) : base(unsecure)
-        {
-            SecureConfig = JsonSerializer.Deserialize<TSecure>(secure);
-        }
     }
 }
