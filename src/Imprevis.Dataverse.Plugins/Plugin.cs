@@ -20,7 +20,10 @@ namespace Imprevis.Dataverse.Plugins
             services.AddSingleton(p => serviceProvider.Get<ITracingService>());
             services.AddSingleton(p => serviceProvider.Get<IServiceEndpointNotificationService>());
 
+            services.AddSingleton<ICacheService, MemoryCacheService>();
             services.AddSingleton<IDataverseServiceFactory, DataverseServiceFactory>();
+            services.AddSingleton<IDateTimeService, CurrentDateTimeService>();
+            services.AddSingleton<IHttpService, HttpService>(); 
             services.AddSingleton<ILoggingService, LoggingService>();
 
             services.AddSingleton(typeof(TRunner));
@@ -62,11 +65,7 @@ namespace Imprevis.Dataverse.Plugins
             }
         }
 
-        public virtual void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton<IDateTimeService, CurrentDateTimeService>();
-            services.AddSingleton<IHttpService, HttpService>();
-        }
+        public virtual void ConfigureServices(IServiceCollection services) { }
 
         private bool HasValidRegistration(IPluginExecutionContext executionContext)
         {

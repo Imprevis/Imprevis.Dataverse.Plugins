@@ -28,6 +28,7 @@
         public static void LogDebug(this ILoggingService loggingService, Exception ex)
         {
             loggingService.Log(LogLevel.Debug, ex);
+            loggingService.Log(LogLevel.Debug, ex.StackTrace);
         }
 
         public static void LogDebug(this ILoggingService loggingService, AttributeCollection attributes)
@@ -68,6 +69,7 @@
         public static void LogTrace(this ILoggingService loggingService, Exception ex)
         {
             loggingService.Log(LogLevel.Trace, ex);
+            loggingService.Log(LogLevel.Trace, ex.StackTrace);
         }
 
         public static void LogTrace(this ILoggingService loggingService, AttributeCollection attributes)
