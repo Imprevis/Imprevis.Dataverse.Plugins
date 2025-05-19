@@ -6,7 +6,7 @@ namespace Imprevis.Dataverse.Plugins
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.PluginTelemetry;
 
-    public class LoggingService : ILoggingService
+    internal class LoggingService : ILoggingService
     {
         private readonly ITracingService tracingService;
         private readonly ILogger logger;

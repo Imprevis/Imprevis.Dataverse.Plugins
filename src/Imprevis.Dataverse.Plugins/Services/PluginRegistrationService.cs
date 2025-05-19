@@ -2,10 +2,9 @@
 {
     using Microsoft.Xrm.Sdk;
     using System;
-    using System.Text.Json;
-    using System.Threading;
+    using System.Linq;
 
-    public class PluginRegistrationService : IPluginRegistrationService
+    internal class PluginRegistrationService : IPluginRegistrationService
     {
         private readonly IPluginExecutionContext executionContext;
 
@@ -25,9 +24,13 @@
             }
 
             // Check if a Registration matches the current execution context.
-            foreach (var attribute in attributes)
+            foreach (var attribute in attributes.Cast<RegistrationAttribute>())
             {
-                var isValid = (attribute as RegistrationAttribute).IsValid(executionContext);
+                var isValid = attribute.Mode == executionContext.Mode &&
+                              attribute.Stage == executionContext.Stage &&
+                              attribute.Message == executionContext.MessageName &&
+                              attribute.EntityName == executionContext.PrimaryEntityName;
+
                 if (isValid)
                 {
                     return true;

@@ -5,7 +5,7 @@ namespace Imprevis.Dataverse.Plugins
     using System.Net;
     using System.Text.Json;
 
-    public class HttpService : IHttpService
+    internal class HttpService : IHttpService
     {
         public TResponse Send<TResponse>(string method, string url, Stream body = null, Dictionary<string, string> headers = null)
         {

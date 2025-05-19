@@ -3,7 +3,7 @@
     using Imprevis.Dataverse.Plugins.Requests;
     using System;
 
-    public class CurrentDateTimeService : IDateTimeService
+    internal class CurrentDateTimeService : IDateTimeService
     {
         public CurrentDateTimeService(IDataverseServiceFactory serviceFactory)
         {
@@ -12,18 +12,23 @@
 
         public IDataverseServiceFactory ServiceFactory { get; }
 
-        public DateTime Get()
+        public DateTime GetUtc()
         {
             return DateTime.UtcNow;
         }
 
-        public DateTime GetUserLocal()
+        public DateTime GetLocal()
         {
-            var service = ServiceFactory.GetUserService();
+            return GetLocal(Guid.Empty);
+        }
+
+        public DateTime GetLocal(Guid userId)
+        {
+            var service = ServiceFactory.GetUserService(userId);
 
             var timeZoneInfo = service.Execute(new GetUserTimeZoneInfo());
-            
-            return TimeZoneInfo.ConvertTimeFromUtc(Get(), timeZoneInfo);
+
+            return TimeZoneInfo.ConvertTimeFromUtc(GetUtc(), timeZoneInfo);
         }
     }
 }

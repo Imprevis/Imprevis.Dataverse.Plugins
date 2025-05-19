@@ -3,7 +3,7 @@
     using Microsoft.Xrm.Sdk;
     using System.Text.Json;
 
-    public class PluginConfigService : IPluginConfigService
+    internal class PluginConfigService : IPluginConfigService
     {
         private readonly string unsecure;
         private readonly string secure;

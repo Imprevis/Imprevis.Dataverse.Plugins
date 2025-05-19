@@ -3,7 +3,7 @@
     using Microsoft.Xrm.Sdk;
     using System;
 
-    public class DataverseServiceFactory : IDataverseServiceFactory
+    internal class DataverseServiceFactory : IDataverseServiceFactory
     {
         private readonly IOrganizationServiceFactory serviceFactory;
         private readonly ILoggingService logger;

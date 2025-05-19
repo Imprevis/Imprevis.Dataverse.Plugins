@@ -1,8 +1,8 @@
 ﻿namespace Imprevis.Dataverse.Plugins.Requests
 {
+    using Imprevis.Dataverse.Plugins.Extensions;
     using Microsoft.Xrm.Sdk.Query;
     using System;
-    using System.Linq;
 
     internal class GetUserTimeZoneInfo : IDataverseRequest<TimeZoneInfo>
     {
@@ -14,9 +14,7 @@
             var link = query.AddLink("usersettings", "timezonecode", "timezonecode");
             link.LinkCriteria.AddCondition("systemuserid", ConditionOperator.EqualUserId);
 
-            var result = service.RetrieveMultiple(query);
-
-            var entity = result.Entities.FirstOrDefault();
+            var entity = service.RetrieveFirstOrDefault(query);
             if (entity == null)
             {
                 throw new Exception("Unable to retrieve time zone information for user.");

@@ -5,7 +5,7 @@
     using System.Runtime.Caching;
     using System.Threading;
 
-    public class MemoryCacheService : ICacheService
+    internal class MemoryCacheService : ICacheService
     {
         private static readonly MemoryCache cache = MemoryCache.Default;
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> locks = new ConcurrentDictionary<string, SemaphoreSlim>();
@@ -71,7 +71,7 @@
 
         public void Set<T>(string key, T value, TimeSpan duration) where T : struct
         {
-            cache.Set(key, value, dateTime.Get().Add(duration));
+            cache.Set(key, value, dateTime.GetUtc().Add(duration));
         }
     }
 }

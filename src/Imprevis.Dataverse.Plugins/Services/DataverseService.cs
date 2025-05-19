@@ -5,7 +5,7 @@
     using System;
     using System.Linq;
 
-    public class DataverseService : IDataverseService
+    internal class DataverseService : IDataverseService
     {
         private readonly IOrganizationService service;
         private readonly ILoggingService logger;

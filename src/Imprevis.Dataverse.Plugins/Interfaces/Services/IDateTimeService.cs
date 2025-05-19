@@ -7,13 +7,16 @@
         /// <summary>
         /// Get the current time in UTC.
         /// </summary>
-        /// <returns></returns>
-        DateTime Get();
+        DateTime GetUtc();
 
         /// <summary>
-        /// Get the current time in the user's local time zone.
+        /// Get the current time in the current user's local time zone.
         /// </summary>
-        /// <returns></returns>
-        DateTime GetUserLocal();
+        DateTime GetLocal();
+
+        /// <summary>
+        /// Get the current time in the specified user's local time zone.
+        /// </summary>
+        DateTime GetLocal(Guid userId);
     }
 }

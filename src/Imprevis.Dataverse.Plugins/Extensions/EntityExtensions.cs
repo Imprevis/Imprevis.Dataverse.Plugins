@@ -1,6 +1,5 @@
 ﻿namespace Imprevis.Dataverse.Plugins.Extensions
 {
-    using Imprevis.Dataverse.Plugins.Guards;
     using Microsoft.Xrm.Sdk;
     using System;
 
@@ -61,7 +60,10 @@
 
         public static Entity Clone(this Entity entity)
         {
-            Guard.IsNotNull(entity, nameof(entity));
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
 
             var newEntity = new Entity(entity.LogicalName, entity.Id);
 
@@ -89,7 +91,10 @@
         /// <returns>A new entity with the coalesced attributes.</returns>
         public static Entity Coalesce(this Entity baseEntity, params Entity[] entities)
         {
-            Guard.IsNotNull(baseEntity, nameof(baseEntity));
+            if (baseEntity == null)
+            {
+                throw new ArgumentNullException(nameof(baseEntity));
+            }
 
             var newEntity = baseEntity.Clone();
 
