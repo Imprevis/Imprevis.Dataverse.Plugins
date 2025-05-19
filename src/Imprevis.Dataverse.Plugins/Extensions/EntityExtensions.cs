@@ -3,8 +3,14 @@
     using Microsoft.Xrm.Sdk;
     using System;
 
+    /// <summary>
+    /// Extensions for the Entity class.
+    /// </summary>
     public static class EntityExtensions
     {
+        /// <summary>
+        /// Gets the value of an AliasedValue from an entity, using the alias name and attribute name.
+        /// </summary>
         public static T GetAliasedValue<T>(this Entity entity, string aliasName, string attributeName, T defaultValue = default)
         {
             if (entity == null)
@@ -21,11 +27,17 @@
             return (T)value;
         }
 
+        /// <summary>
+        /// Gets the formatted value of an AliasedValue from an entity, using the alias name and attribute name.
+        /// </summary>
         public static string GetAliasedFormattedValue(this Entity entity, string aliasName, string fieldName, string defaultValue = null)
         {
             return entity.GetFormattedValue($"{aliasName}.{fieldName}", defaultValue);
         }
 
+        /// <summary>
+        /// Gets the formatted value of an attribute from an entity.
+        /// </summary>
         public static string GetFormattedValue(this Entity entity, string fieldName, string defaultValue = null)
         {
             if (entity.FormattedValues.ContainsKey(fieldName))
@@ -36,16 +48,25 @@
             return defaultValue;
         }
 
+        /// <summary>
+        /// Gets the value of an OptionSetValue from an entity.
+        /// </summary>
         public static int? GetOptionSetValue(this Entity entity, string attributeName)
         {
             return entity.GetAttributeValue<OptionSetValue>(attributeName)?.Value;
         }
 
+        /// <summary>
+        /// Gets the value of an OptionSetValue from an entity, or returns a default value if it doesn't exist.
+        /// </summary>
         public static int GetOptionSetValue(this Entity entity, string attributeName, int defaultValue)
         {
             return entity.GetOptionSetValue(attributeName) ?? defaultValue;
         }
 
+        /// <summary>
+        /// Gets the value of an OptionSetValue from an entity, or returns a default value if it doesn't exist.
+        /// </summary>
         public static T? GetOptionSetValue<T>(this Entity entity, string attributeName) where T: struct
         {
             var value = entity.GetOptionSetValue(attributeName);
@@ -58,6 +79,9 @@
             return null;
         }
 
+        /// <summary>
+        /// Clones the entity, creating a new instance with the same attributes and values.
+        /// </summary>
         public static Entity Clone(this Entity entity)
         {
             if (entity == null)
@@ -88,7 +112,6 @@
         /// <summary>
         /// Coalesces the entities into the source entity in the given order.
         /// </summary>
-        /// <returns>A new entity with the coalesced attributes.</returns>
         public static Entity Coalesce(this Entity baseEntity, params Entity[] entities)
         {
             if (baseEntity == null)

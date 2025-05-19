@@ -5,13 +5,22 @@
     using System;
     using System.Linq;
 
+    /// <summary>
+    /// Extensions for the <see cref="IPluginExecutionContext"/> interface.
+    /// </summary>
     public static class PluginExecutionContextExtensions
     {
+        /// <summary>
+        /// Gets an OrganizationRequest from the InputParameters of the plugin context.
+        /// </summary>
         public static TRequest GetRequest<TRequest>(this IPluginExecutionContext context) where TRequest : OrganizationRequest
         {
             return context.InputParameters as TRequest;
         }
 
+        /// <summary>
+        /// Gets the target entity from the InputParameters of the plugin context.
+        /// </summary>
         public static Entity GetTarget(this IPluginExecutionContext context)
         {
             if (!context.InputParameters.ContainsKey("Target"))
@@ -28,11 +37,17 @@
             return target;
         }
 
+        /// <summary>
+        /// Gets the target entity from the InputParameters of the plugin context and converts it to the specified type.
+        /// </summary>
         public static T GetTarget<T>(this IPluginExecutionContext context) where T: Entity
         {
             return GetTarget(context).ToEntity<T>();
         }
 
+        /// <summary>
+        /// Gets the target entity reference from the InputParameters of the plugin context.
+        /// </summary>
         public static EntityReference GetTargetReference(this IPluginExecutionContext context)
         {
             if (!context.InputParameters.ContainsKey("Target"))
@@ -49,31 +64,51 @@
             return context.GetTarget().ToEntityReference();
         }
 
+        /// <summary>
+        /// Gets the pre-image Entity from the plugin context.
+        /// </summary>
         public static Entity GetPreImage(this IPluginExecutionContext context)
         {
             return context.PreEntityImages.FirstOrDefault().Value;
         }
 
+        /// <summary>
+        /// Gets the pre-image Entity from the plugin context and converts it to the specified type.
+        /// </summary>
         public static T GetPreImage<T>(this IPluginExecutionContext context) where T: Entity
         {
             return GetPreImage(context).ToEntity<T>();
         }
 
+        /// <summary>
+        /// Gets the post-image Entity from the plugin context.
+        /// </summary>
         public static Entity GetPostImage(this IPluginExecutionContext context)
         {
             return context.PostEntityImages.FirstOrDefault().Value;
         }
 
+        /// <summary>
+        /// Gets the post-image Entity from the plugin context and converts it to the specified type.
+        /// </summary>
         public static T GetPostImage<T>(this IPluginExecutionContext context) where T: Entity
         {
             return GetPostImage(context).ToEntity<T>();
         }
 
+        /// <summary>
+        /// Checks if the plugin is running in asynchronous mode.
+        /// </summary>
         public static bool IsAsynchronous(this IPluginExecutionContext context)
         {
             return context.Mode == Mode.Asynchronous;
         }
 
+        /// <summary>
+        /// Checks if the plugin is running in synchronous mode.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static bool IsSynchronous(this IPluginExecutionContext context)
         {
             return context.Mode == Mode.Synchronous;

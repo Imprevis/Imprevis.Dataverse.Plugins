@@ -2,6 +2,9 @@
 {
     using Microsoft.Xrm.Sdk;
 
+    /// <summary>
+    /// Interface for a service that provides access to the Dataverse service.
+    /// </summary>
     public interface IDataverseService : IOrganizationService
     {
         /// <summary>
@@ -11,7 +14,7 @@
         void Execute(IDataverseRequest request);
 
         /// <summary>
-        /// Execute a request against the Dataverse service and returns a response.
+        /// Execute a request against the Dataverse service and return a response.
         /// </summary>
         /// <typeparam name="TResponse">Type of the response.</typeparam>
         /// <param name="request">Request to execute.</param>

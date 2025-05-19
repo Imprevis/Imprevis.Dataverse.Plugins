@@ -1,21 +1,18 @@
 ﻿namespace Imprevis.Dataverse.Plugins
 {
+    /// <summary>
+    /// Constants for standard Dataverse plugin modes.
+    /// </summary>
     public static class Mode
     {
+        /// <summary>
+        /// Synchronous
+        /// </summary>
         public const int Synchronous = 0;
-        public const int Asynchronous = 1;
 
-        public static string GetName(int stage)
-        {
-            switch (stage)
-            {
-                case 0:
-                    return "Synchronous";
-                case 1:
-                    return "Asynchronous";
-                default:
-                    return "Unkown";
-            }
-        }
+        /// <summary>
+        /// Asynchronous
+        /// </summary>
+        public const int Asynchronous = 1;
     }
 }

@@ -1,24 +1,23 @@
 ﻿namespace Imprevis.Dataverse.Plugins
 {
+    /// <summary>
+    /// Constants for standard Dataverse plugin stages.
+    /// </summary>
     public static class Stage
     {
+        /// <summary>
+        /// Pre-Validation
+        /// </summary>
         public const int PreValidation = 10;
-        public const int PreOperation = 20;
-        public const int PostOperation = 40;
 
-        public static string GetName(int stage)
-        {
-            switch (stage)
-            {
-                case 10:
-                    return "PreValidation";
-                case 20:
-                    return "PreOperation";
-                case 40:
-                    return "PostOperation";
-                default:
-                    return "Unkown";
-            }
-        }
+        /// <summary>
+        /// Pre-Operation
+        /// </summary>
+        public const int PreOperation = 20;
+
+        /// <summary>
+        /// Post-Operation
+        /// </summary>
+        public const int PostOperation = 40;
     }
 }

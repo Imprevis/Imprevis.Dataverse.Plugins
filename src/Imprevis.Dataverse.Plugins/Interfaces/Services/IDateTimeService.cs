@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// Interface containing methods for working with DateTime's.
+    /// </summary>
     public interface IDateTimeService
     {
         /// <summary>

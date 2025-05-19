@@ -2,6 +2,9 @@ namespace Imprevis.Dataverse.Plugins
 {
     using System;
 
+    /// <summary>
+    /// Interface containing methods for interacting with a cache.
+    /// </summary>
     public interface ICacheService
     {
         /// <summary>

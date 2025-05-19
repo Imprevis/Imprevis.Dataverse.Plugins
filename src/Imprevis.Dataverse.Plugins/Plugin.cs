@@ -7,23 +7,37 @@ namespace Imprevis.Dataverse.Plugins
     using Microsoft.Xrm.Sdk.Extensions;
     using Microsoft.Xrm.Sdk.PluginTelemetry;
 
+    /// <summary>
+    /// Base class for plugins.
+    /// </summary>
+    /// <typeparam name="TRunner">Type of the Plugin Runner.</typeparam>
     public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
     {
         private readonly string unsecure;
         private readonly string secure;
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public Plugin() { }
 
+        /// <summary>
+        /// Constructor with unsecure configuration.
+        /// </summary>
         public Plugin(string unsecure) : this()
         {
             this.unsecure = unsecure;
         }
 
+        /// <summary>
+        /// Constructor with unsecure and secure configuration.
+        /// </summary>
         public Plugin(string unsecure, string secure) : this(unsecure)
         {
             this.secure = secure;
         }
 
+        /// <inheritdoc/>
         public void Execute(IServiceProvider serviceProvider)
         {
             var services = new ServiceCollection();
@@ -82,6 +96,9 @@ namespace Imprevis.Dataverse.Plugins
             }
         }
 
+        /// <summary>
+        /// Configure additional services in the dependency injection container.
+        /// </summary>
         public virtual void ConfigureServices(IServiceCollection services) { }
     }
 }

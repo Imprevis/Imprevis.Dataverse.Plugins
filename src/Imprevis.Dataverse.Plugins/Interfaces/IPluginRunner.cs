@@ -1,5 +1,8 @@
 namespace Imprevis.Dataverse.Plugins
 {
+    /// <summary>
+    /// Interface for a plugin runner.
+    /// </summary>
     public interface IPluginRunner
     {
         /// <summary>

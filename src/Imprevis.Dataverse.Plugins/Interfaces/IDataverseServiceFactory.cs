@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// Interface for creating instances of <see cref="IDataverseService" />.
+    /// </summary>
     public interface IDataverseServiceFactory
     {
         /// <summary>
