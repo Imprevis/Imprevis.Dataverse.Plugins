@@ -6,11 +6,13 @@
     internal class DataverseServiceFactory : IDataverseServiceFactory
     {
         private readonly IOrganizationServiceFactory serviceFactory;
+        private readonly ICacheService cache;
         private readonly ILoggingService logger;
 
-        public DataverseServiceFactory(IOrganizationServiceFactory serviceFactory, ILoggingService logger)
+        public DataverseServiceFactory(IOrganizationServiceFactory serviceFactory, ICacheService cache, ILoggingService logger)
         {
             this.serviceFactory = serviceFactory;
+            this.cache = cache;
             this.logger = logger;
         }
 
@@ -34,7 +36,7 @@
             // Guid.Empty == Current User, null == SYSTEM User, Other == Other User
             var orgService = serviceFactory.CreateOrganizationService(userId);
 
-            return new DataverseService(orgService, logger);
+            return new DataverseService(orgService, cache, logger);
         }
     }
 }

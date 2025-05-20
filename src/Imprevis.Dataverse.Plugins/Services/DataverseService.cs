@@ -8,11 +8,13 @@
     internal class DataverseService : IDataverseService
     {
         private readonly IOrganizationService service;
+        private readonly ICacheService cache;
         private readonly ILoggingService logger;
 
-        public DataverseService(IOrganizationService service, ILoggingService logger)
+        public DataverseService(IOrganizationService service, ICacheService cache, ILoggingService logger)
         {
             this.service = service;
+            this.cache = cache;
             this.logger = logger;
         }
 
@@ -105,6 +107,11 @@
         public TResponse Execute<TResponse>(IDataverseRequest<TResponse> request)
         {
             logger.LogDebug("Executing Request: {0}", request.GetType().FullName);
+
+            if (request is IDataverseCachedRequest<TResponse> cachedRequest)
+            {
+                return cache.GetOrAdd(cachedRequest.CacheKey, () => request.Execute(this, logger), cachedRequest.CacheDuration);
+            }
 
             return request.Execute(this, logger);
         }
