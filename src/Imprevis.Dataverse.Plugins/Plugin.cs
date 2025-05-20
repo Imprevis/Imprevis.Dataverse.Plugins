@@ -50,7 +50,7 @@ namespace Imprevis.Dataverse.Plugins
 
             services.AddScoped<ICacheService, MemoryCacheService>();
             services.AddScoped<IDataverseServiceFactory, DataverseServiceFactory>();
-            services.AddScoped<IDateTimeService, CurrentDateTimeService>();
+            services.AddScoped<IDateTimeService, DateTimeService>();
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<ILoggingService, LoggingService>();
             services.AddScoped<IPluginConfigService>(p => new PluginConfigService(unsecure, secure));

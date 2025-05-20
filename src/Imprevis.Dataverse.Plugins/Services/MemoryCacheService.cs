@@ -10,13 +10,6 @@
         private static readonly MemoryCache cache = MemoryCache.Default;
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> locks = new ConcurrentDictionary<string, SemaphoreSlim>();
 
-        private readonly IDateTimeService dateTime;
-
-        public MemoryCacheService(IDateTimeService dateTime)
-        {
-            this.dateTime = dateTime;
-        }
-
         public void Clear()
         {
             foreach (var item in cache)
@@ -40,7 +33,7 @@
             return GetOrAdd(key, () => value, duration);
         }
 
-        public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration) where T: struct
+        public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration) where T : struct
         {
             var value = Get<T>(key);
             if (value.HasValue)
@@ -71,7 +64,7 @@
 
         public void Set<T>(string key, T value, TimeSpan duration) where T : struct
         {
-            cache.Set(key, value, dateTime.GetUtc().Add(duration));
+            cache.Set(key, value, DateTime.UtcNow.Add(duration));
         }
     }
 }
