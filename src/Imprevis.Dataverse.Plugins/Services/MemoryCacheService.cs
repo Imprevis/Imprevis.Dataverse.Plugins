@@ -18,27 +18,27 @@
             }
         }
 
-        public T? Get<T>(string key) where T : struct
+        public T Get<T>(string key)
         {
             var value = cache.Get(key);
             if (value == null)
             {
-                return null;
+                return default;
             }
             return (T)value;
         }
 
-        public T GetOrAdd<T>(string key, T value, TimeSpan duration) where T : struct
+        public T GetOrAdd<T>(string key, T value, TimeSpan duration)
         {
             return GetOrAdd(key, () => value, duration);
         }
 
-        public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration) where T : struct
+        public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration)
         {
             var value = Get<T>(key);
-            if (value.HasValue)
+            if (value == null)
             {
-                return (T)value;
+                return value;
             }
 
             var _lock = locks.GetOrAdd(key, new SemaphoreSlim(1, 1));
@@ -46,15 +46,15 @@
 
             value = Get<T>(key);
 
-            if (!value.HasValue)
+            if (value != null)
             {
                 value = factory();
-                Set(key, (T)value, duration);
+                Set(key, value, duration);
             }
 
             _lock.Release();
 
-            return (T)value;
+            return value;
         }
 
         public void Remove(string key)
@@ -62,7 +62,7 @@
             cache.Remove(key);
         }
 
-        public void Set<T>(string key, T value, TimeSpan duration) where T : struct
+        public void Set<T>(string key, T value, TimeSpan duration)
         {
             cache.Set(key, value, DateTime.UtcNow.Add(duration));
         }

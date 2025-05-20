@@ -18,7 +18,7 @@ namespace Imprevis.Dataverse.Plugins
         /// <typeparam name="T">Type of the cached value.</typeparam>
         /// <param name="key">Key of the cache item.</param>
         /// <returns>The value from the cache or null if it doesn't exist or is expired.</returns>
-        T? Get<T>(string key) where T : struct;
+        T Get<T>(string key);
 
         /// <summary>
         /// Get a value from the cache or add it if it doesn't exist.
@@ -28,7 +28,7 @@ namespace Imprevis.Dataverse.Plugins
         /// <param name="value">Value to cache if the key doesn't exist already.</param>
         /// <param name="duration">Duration to cache the value.</param>
         /// <returns>The value from the cache.</returns>
-        T GetOrAdd<T>(string key, T value, TimeSpan duration) where T : struct;
+        T GetOrAdd<T>(string key, T value, TimeSpan duration);
 
         /// <summary>
         /// Get a value from the cache or add it if it doesn't exist by calling the factory function.
@@ -38,7 +38,7 @@ namespace Imprevis.Dataverse.Plugins
         /// <param name="factory">Function to execute to get the value if the key doesn't exist alraedy.</param>
         /// <param name="duration">Duration to cache the value.</param>
         /// <returns>The value from the cache.</returns>
-        T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration) where T : struct;
+        T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration);
 
         /// <summary>
         /// Remove a value from the cache.
@@ -53,6 +53,6 @@ namespace Imprevis.Dataverse.Plugins
         /// <param name="key">Key of the cache item.</param>
         /// <param name="value">Value to cache.</param>
         /// <param name="duration">Duration to cache the value.</param>
-        void Set<T>(string key, T value, TimeSpan duration) where T : struct;
+        void Set<T>(string key, T value, TimeSpan duration);
     }
 }
