@@ -14,7 +14,7 @@
             var link = query.AddLink("usersettings", "timezonecode", "timezonecode");
             link.LinkCriteria.AddCondition("systemuserid", ConditionOperator.EqualUserId);
 
-            var entity = service.RetrieveFirstOrDefault(query);
+            var entity = service.RetrieveSingle(query);
             if (entity == null)
             {
                 throw new Exception("Unable to retrieve time zone information for user.");
