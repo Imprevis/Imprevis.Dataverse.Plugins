@@ -13,6 +13,11 @@ namespace Imprevis.Dataverse.Plugins
         void Clear();
 
         /// <summary>
+        /// Checks if a key exists in the cache.
+        /// </summary>
+        bool Contains(string key);
+
+        /// <summary>
         /// Get a value from the cache.
         /// </summary>
         /// <typeparam name="T">Type of the cached value.</typeparam>

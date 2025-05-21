@@ -18,6 +18,11 @@
             }
         }
 
+        public bool Contains(string key)
+        {
+            return cache.Contains(key);
+        }
+
         public T Get<T>(string key)
         {
             var value = cache.Get(key);
