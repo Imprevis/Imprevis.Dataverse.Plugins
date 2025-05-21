@@ -1,7 +1,10 @@
 ﻿namespace Imprevis.Dataverse.Plugins.Services
 {
     using Microsoft.Xrm.Sdk;
+    using System;
+    using System.IO;
     using System.Text.Json;
+    using System.Xml.Serialization;
 
     internal class PluginConfigService : IPluginConfigService
     {
@@ -14,24 +17,41 @@
             this.secure = secure;
         }
 
-        public TUnsecure GetUnsecure<TUnsecure>()
+        public TUnsecure GetUnsecure<TUnsecure>(SerializationFormat type = SerializationFormat.Json)
         {
             if (string.IsNullOrEmpty(unsecure))
             {
                 throw new InvalidPluginExecutionException("Unsecure plugin configuration is missing.");
             }
 
-            return JsonSerializer.Deserialize<TUnsecure>(unsecure);
+            return Deserialize<TUnsecure>(unsecure, type);
         }
 
-        public TSecure GetSecure<TSecure>()
+        public TSecure GetSecure<TSecure>(SerializationFormat type = SerializationFormat.Json)
         {
             if (string.IsNullOrEmpty(secure))
             {
                 throw new InvalidPluginExecutionException("Secure plugin configuration is missing.");
             }
 
-            return JsonSerializer.Deserialize<TSecure>(secure);
+            return Deserialize<TSecure>(secure, type);
+        }
+
+        private TObject Deserialize<TObject>(string value, SerializationFormat type)
+        {
+            switch (type)
+            {
+                case SerializationFormat.Json:
+                    return JsonSerializer.Deserialize<TObject>(value);
+                case SerializationFormat.Xml:
+                    var serializer = new XmlSerializer(typeof(TObject));
+                    using (var reader = new StringReader(value))
+                    {
+                        return (TObject)serializer.Deserialize(reader);
+                    }
+                default:
+                    throw new NotSupportedException("Invalid serialization type.");
+            }
         }
     }
 }

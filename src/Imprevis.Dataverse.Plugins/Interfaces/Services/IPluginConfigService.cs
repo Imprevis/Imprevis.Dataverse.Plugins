@@ -8,11 +8,13 @@ namespace Imprevis.Dataverse.Plugins
         /// <summary>
         /// Gets the unsecure configuration settings for the plugin.
         /// </summary>
-        TUnsecure GetUnsecure<TUnsecure>();
+        /// <param name="format">Determins how the data is foratted. This affects which deserializer is used.</param>
+        TUnsecure GetUnsecure<TUnsecure>(SerializationFormat format = SerializationFormat.Json);
 
         /// <summary>
         /// Gets the secure configuration settings for the plugin.
         /// </summary>
-        TSecure GetSecure<TSecure>();
+        /// <param name="format">Determins how the data is foratted. This affects which deserializer is used.</param>
+        TSecure GetSecure<TSecure>(SerializationFormat format = SerializationFormat.Json);
     }
 }
