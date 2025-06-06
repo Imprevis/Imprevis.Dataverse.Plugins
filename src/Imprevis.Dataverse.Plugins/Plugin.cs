@@ -53,7 +53,7 @@ namespace Imprevis.Dataverse.Plugins
             services.AddScoped<IDateTimeService, DateTimeService>();
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<ILoggingService, LoggingService>();
-            services.AddScoped<IPluginConfigService>(p => new PluginConfigService(unsecure, secure));
+            services.AddScoped<IConfigurationService>(p => new ConfigurationService(unsecure, secure));
             services.AddScoped<IPluginRegistrationService, PluginRegistrationService>();
 
             services.AddTransient(typeof(TRunner));
