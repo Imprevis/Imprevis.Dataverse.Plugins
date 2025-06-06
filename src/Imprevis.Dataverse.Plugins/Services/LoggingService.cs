@@ -10,17 +10,14 @@ namespace Imprevis.Dataverse.Plugins
     {
         private readonly ITracingService tracingService;
         private readonly ILogger logger;
-#if DEBUG
-        private readonly bool isDebugMode = true;
-#else
-        private readonly bool isDebugMode = false;
-#endif
 
         public LoggingService(ITracingService tracingService, ILogger logger = null)
         {
             this.tracingService = tracingService;
             this.logger = logger;
         }
+
+        public LogLevel LogLevel { get; set; } = LogLevel.Information;
 
         public void Log(LogLevel level, string message)
         {
@@ -29,14 +26,14 @@ namespace Imprevis.Dataverse.Plugins
                 return;
             }
 
-            if (level == LogLevel.Debug && !isDebugMode)
+            if (level < LogLevel)
             {
                 return;
             }
 
             var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
 
-            tracingService?.Trace($"[{timestamp}] {message}");
+            tracingService.Trace($"[{timestamp}] {message}");
             logger?.LogTrace(message);
         }
 
