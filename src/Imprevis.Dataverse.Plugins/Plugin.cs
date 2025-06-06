@@ -13,13 +13,17 @@ namespace Imprevis.Dataverse.Plugins
     /// <typeparam name="TRunner">Type of the Plugin Runner.</typeparam>
     public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
     {
+        private readonly Type pluginType;
         private readonly string unsecure;
         private readonly string secure;
 
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public Plugin() { }
+        public Plugin()
+        {
+            this.pluginType = GetType();
+        }
 
         /// <summary>
         /// Constructor with unsecure configuration.
@@ -42,19 +46,19 @@ namespace Imprevis.Dataverse.Plugins
         {
             var services = new ServiceCollection();
 
-            services.AddScoped(p => serviceProvider.Get<IOrganizationServiceFactory>());
-            services.AddScoped(p => serviceProvider.Get<IPluginExecutionContext>());
-            services.AddScoped(p => serviceProvider.Get<ILogger>());
-            services.AddScoped(p => serviceProvider.Get<ITracingService>());
-            services.AddScoped(p => serviceProvider.Get<IServiceEndpointNotificationService>());
+            services.AddSingleton(p => serviceProvider.Get<IOrganizationServiceFactory>());
+            services.AddSingleton(p => serviceProvider.Get<IPluginExecutionContext>());
+            services.AddSingleton(p => serviceProvider.Get<ILogger>());
+            services.AddSingleton(p => serviceProvider.Get<ITracingService>());
+            services.AddSingleton(p => serviceProvider.Get<IServiceEndpointNotificationService>());
 
-            services.AddScoped<ICacheService, MemoryCacheService>();
-            services.AddScoped<IDataverseServiceFactory, DataverseServiceFactory>();
-            services.AddScoped<IDateTimeService, DateTimeService>();
-            services.AddScoped<IHttpService, HttpService>();
-            services.AddScoped<ILoggingService, LoggingService>();
-            services.AddScoped<IConfigurationService>(p => new ConfigurationService(unsecure, secure));
-            services.AddScoped<IPluginRegistrationService, PluginRegistrationService>();
+            services.AddSingleton<ICacheService, MemoryCacheService>();
+            services.AddSingleton<IDataverseServiceFactory, DataverseServiceFactory>();
+            services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddSingleton<IHttpService, HttpService>();
+            services.AddSingleton<ILoggingService, LoggingService>();
+            services.AddSingleton<IConfigurationService>(p => new ConfigurationService(unsecure, secure));
+            services.AddSingleton<IRegistrationService, RegistrationService>();
 
             services.AddTransient(typeof(TRunner));
 
@@ -62,26 +66,21 @@ namespace Imprevis.Dataverse.Plugins
 
             var provider = services.BuildServiceProvider();
 
-            var logger = provider.Get<ILoggingService>();
-
             try
             {
-                logger.LogDebug("Starting execution.");
-
-                var pluginType = GetType();
-                
-                var registrationService = provider.Get<IPluginRegistrationService>();
+                var registrationService = provider.Get<IRegistrationService>();
                 if (!registrationService.IsValid(pluginType))
                 {
                     throw new InvalidPluginExecutionException($"Plugin '{pluginType.FullName}' is not registered correctly.");
                 }
 
-                var runner = provider.GetService<TRunner>();
+                var runner = provider.Get<TRunner>();
                 runner.Execute();
             }
             catch (Exception ex)
             {
-                logger.LogTrace(ex);
+                var logger = provider.Get<ILoggingService>();
+                logger.LogCritical(ex);
 
                 if (ex is InvalidPluginExecutionException)
                 {
@@ -89,10 +88,6 @@ namespace Imprevis.Dataverse.Plugins
                 }
 
                 throw new InvalidPluginExecutionException("Something went wrong.", ex);
-            }
-            finally
-            {
-                logger.LogDebug("Finishing execution.");
             }
         }
 
