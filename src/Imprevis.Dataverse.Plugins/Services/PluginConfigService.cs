@@ -50,7 +50,7 @@
                         return (TObject)serializer.Deserialize(reader);
                     }
                 default:
-                    throw new NotSupportedException("Invalid serialization type.");
+                    throw new NotSupportedException("Invalid serialization format.");
             }
         }
     }
