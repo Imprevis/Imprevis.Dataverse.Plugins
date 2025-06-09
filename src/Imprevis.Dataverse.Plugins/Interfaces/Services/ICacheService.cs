@@ -22,8 +22,9 @@ namespace Imprevis.Dataverse.Plugins
         /// </summary>
         /// <typeparam name="T">Type of the cached value.</typeparam>
         /// <param name="key">Key of the cache item.</param>
-        /// <returns>The value from the cache or null if it doesn't exist or is expired.</returns>
-        T Get<T>(string key);
+        /// <param name="value">Output value.</param>
+        /// <returns>A boolean indicating whether the item was found in the cache.</returns>
+        bool Get<T>(string key, out T value);
 
         /// <summary>
         /// Get a value from the cache or add it if it doesn't exist.

@@ -4,26 +4,15 @@ namespace Imprevis.Dataverse.Plugins
     using Microsoft.Xrm.Sdk;
 
     /// <summary>
-    /// Enumeration representing the different log levels.
-    /// </summary>
-    public enum LogLevel
-    {
-        /// <summary>
-        /// Log level for messages that are useful for debugging. Only works in Debug builds.
-        /// </summary>
-        Debug = 0,
-
-        /// <summary>
-        /// Log level for messages that are useful for troubleshooting.
-        /// </summary>
-        Trace = 1,
-    }
-
-    /// <summary>
     /// Interface containing methods for logging messages.
     /// </summary>
     public interface ILoggingService
     {
+        /// <summary>
+        /// Gets or sets the log level for the logging service.
+        /// </summary>
+        LogLevel LogLevel { get; set; }
+
         /// <summary>
         /// Logs a message with the specified log level.
         /// </summary>

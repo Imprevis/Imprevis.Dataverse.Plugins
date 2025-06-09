@@ -4,11 +4,11 @@
     using System;
     using System.Linq;
 
-    internal class PluginRegistrationService : IPluginRegistrationService
+    internal class RegistrationService : IRegistrationService
     {
         private readonly IPluginExecutionContext executionContext;
 
-        public PluginRegistrationService(IPluginExecutionContext executionContext)
+        public RegistrationService(IPluginExecutionContext executionContext)
         {
             this.executionContext = executionContext;
         }

@@ -6,12 +6,12 @@
     using System.Text.Json;
     using System.Xml.Serialization;
 
-    internal class PluginConfigService : IPluginConfigService
+    internal class ConfigurationService : IConfigurationService
     {
         private readonly string unsecure;
         private readonly string secure;
 
-        public PluginConfigService(string unsecure, string secure)
+        public ConfigurationService(string unsecure, string secure)
         {
             this.unsecure = unsecure;
             this.secure = secure;
@@ -50,7 +50,7 @@
                         return (TObject)serializer.Deserialize(reader);
                     }
                 default:
-                    throw new NotSupportedException("Invalid serialization type.");
+                    throw new NotSupportedException("Invalid serialization format.");
             }
         }
     }

@@ -10,6 +10,8 @@
         private static readonly MemoryCache cache = MemoryCache.Default;
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> locks = new ConcurrentDictionary<string, SemaphoreSlim>();
 
+        private static readonly object placeholder = new object();
+
         public void Clear()
         {
             foreach (var item in cache)
@@ -23,14 +25,23 @@
             return cache.Contains(key);
         }
 
-        public T Get<T>(string key)
+        public bool Get<T>(string key, out T value)
         {
-            var value = cache.Get(key);
-            if (value == null)
+            var tempValue = cache.Get(key);
+            if (tempValue == null)
             {
-                return default;
+                value = default;
+                return false;
             }
-            return (T)value;
+
+            if (tempValue == placeholder)
+            {
+                value = default;
+                return true;
+            }
+
+            value = (T)tempValue;
+            return true;
         }
 
         public T GetOrAdd<T>(string key, T value, TimeSpan duration)
@@ -40,24 +51,36 @@
 
         public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration)
         {
-            var value = Get<T>(key);
-            if (value == null)
+            var exists = Get<T>(key, out var value);
+
+            // Item exists in cache, return it.
+            if (exists)
             {
                 return value;
             }
 
+            // Item doesn't exist, let's take out a lock and check again.
             var _lock = locks.GetOrAdd(key, new SemaphoreSlim(1, 1));
             _lock.Wait();
-
-            value = Get<T>(key);
-
-            if (value != null)
+            
+            try
             {
-                value = factory();
-                Set(key, value, duration);
-            }
+                // Now that we have an exclusive lock, try to get the item again.
+                exists = Get<T>(key, out value);
 
-            _lock.Release();
+                // Item still doesn't exist in cache, so run the factory method to get it. The factory method
+                // will only run once concurrently because of the lock on the cache key.
+                if (!exists)
+                {
+                    value = factory();
+                    Set(key, value, duration);
+                }
+            }
+            finally
+            {
+                // Release lock so other threads can try to get the value.
+                _lock.Release();
+            }
 
             return value;
         }
@@ -69,7 +92,16 @@
 
         public void Set<T>(string key, T value, TimeSpan duration)
         {
-            cache.Set(key, value, DateTime.UtcNow.Add(duration));
+            // MemoryCache doesn't support setting null values. Use a random object as a placeholder.
+            // This allows us to explicitly cache a null value to avoid cache misses.
+            if (value == null)
+            {
+                cache.Set(key, placeholder, DateTime.UtcNow.Add(duration));
+            }
+            else
+            {
+                cache.Set(key, value, DateTime.UtcNow.Add(duration));
+            }
         }
     }
 }

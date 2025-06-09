@@ -1,5 +1,6 @@
 ﻿namespace Imprevis.Dataverse.Plugins
 {
+    using Microsoft.Xrm.Sdk;
     using System;
 
     /// <summary>
@@ -13,13 +14,8 @@
         IDataverseService GetAdminService();
 
         /// <summary>
-        /// Gets the <see cref="IDataverseService" /> corresponding to the initiating user of the plugin.
+        /// Gets the <see cref="IDataverseService" /> corresponding to the user the plugin is executing as (<see cref="IExecutionContext.UserId"/>), or a specific user if a <paramref name="userId"/> is specified.
         /// </summary>
-        IDataverseService GetUserService();
-        
-        /// <summary>
-        /// Gets the <see cref="IDataverseService" /> corresponding to the requested user ID.
-        /// </summary>
-        IDataverseService GetUserService(Guid userId);
+        IDataverseService GetUserService(Guid userId = default);
     }
 }
