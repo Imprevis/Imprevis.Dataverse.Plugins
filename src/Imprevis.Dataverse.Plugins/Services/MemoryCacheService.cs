@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Runtime.Caching;
     using System.Threading;
 
@@ -41,7 +42,7 @@
         public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration)
         {
             var value = Get<T>(key);
-            if (value == null)
+            if (!IsDefault(value))
             {
                 return value;
             }
@@ -51,7 +52,7 @@
 
             value = Get<T>(key);
 
-            if (value != null)
+            if (IsDefault(value))
             {
                 value = factory();
                 Set(key, value, duration);
@@ -69,7 +70,17 @@
 
         public void Set<T>(string key, T value, TimeSpan duration)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             cache.Set(key, value, DateTime.UtcNow.Add(duration));
+        }
+
+        private bool IsDefault<T>(T value)
+        {
+            return EqualityComparer<T>.Default.Equals(value, default);
         }
     }
 }

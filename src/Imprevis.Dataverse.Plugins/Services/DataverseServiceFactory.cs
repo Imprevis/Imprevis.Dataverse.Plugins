@@ -21,12 +21,7 @@
             return Get(null);
         }
 
-        public IDataverseService GetUserService()
-        {
-            return Get(Guid.Empty);
-        }
-
-        public IDataverseService GetUserService(Guid userId)
+        public IDataverseService GetUserService(Guid userId = default)
         {
             return Get(userId);
         }

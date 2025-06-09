@@ -13,38 +13,23 @@
         DateTime GetUtcNow();
 
         /// <summary>
-        /// Get the current time in the current user's local time zone.
+        /// Get the current time in the current user's local time zone or the time zone of the <paramref name="userId"/> specified.
         /// </summary>
-        DateTime GetLocalNow();
+        DateTime GetLocalNow(Guid userId = default);
 
         /// <summary>
-        /// Get the current time in the specified user's local time zone.
+        /// Get the time zone for the current user or the <paramref name="userId"/> specified.
         /// </summary>
-        DateTime GetLocalNow(Guid userId);
-
-        /// <summary>
-        /// Get the time zone for the current user.
-        /// </summary>
-        TimeZoneInfo GetLocalTimeZone();
-
-        /// <summary>
-        /// Get the time zone for the specified user.
-        /// </summary>
-        TimeZoneInfo GetLocalTimeZone(Guid userId);
+        TimeZoneInfo GetLocalTimeZone(Guid userId = default);
 
         /// <summary>
         /// Converts the provided <see cref="DateTime"/> to UTC.
         /// </summary>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
         DateTime ConvertToUtc(DateTime dateTime);
 
         /// <summary>
         /// Converts the provided <see cref="DateTime"/> in the specified <paramref name="sourceTimeZone"/> to UTC.
         /// </summary>
-        /// <param name="dateTime"></param>
-        /// <param name="sourceTimeZone"></param>
-        /// <returns></returns>
         DateTime ConvertToUtc(DateTime dateTime, TimeZoneInfo sourceTimeZone);
     }
 }

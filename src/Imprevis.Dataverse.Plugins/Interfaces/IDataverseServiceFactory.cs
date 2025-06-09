@@ -13,13 +13,8 @@
         IDataverseService GetAdminService();
 
         /// <summary>
-        /// Gets the <see cref="IDataverseService" /> corresponding to the initiating user of the plugin.
+        /// Gets the <see cref="IDataverseService" /> corresponding to the initiating user of the plugin, or a specific user if a <paramref name="userId"/> is specified.
         /// </summary>
-        IDataverseService GetUserService();
-        
-        /// <summary>
-        /// Gets the <see cref="IDataverseService" /> corresponding to the requested user ID.
-        /// </summary>
-        IDataverseService GetUserService(Guid userId);
+        IDataverseService GetUserService(Guid userId = default);
     }
 }

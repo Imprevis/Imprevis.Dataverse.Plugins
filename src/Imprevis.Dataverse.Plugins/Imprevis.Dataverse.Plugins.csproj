@@ -32,4 +32,8 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Imprevis.Dataverse.Plugins.UnitTests, PublicKey=0024000004800000940000000602000000240000525341310004000001000100c9d5c7429fef7f286c776c083e24f5d48618bb2a3f0d39e99ae691e6b629cea5e6ac86753973023c40ae1c7cf55d230003f61188e86addda90aae9dbb931c467bc2be4386bb0709723d074569a08287f9d00dad9c11ab73a31b02f254c0c9f44a1e28fafe07ebf42be7751964985239ba04f9b6ee737bddcc2677df336f3a3af" />
+  </ItemGroup>
+
 </Project>

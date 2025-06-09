@@ -17,24 +17,14 @@
             return DateTime.UtcNow;
         }
 
-        public DateTime GetLocalNow()
-        {
-            return GetLocalNow(Guid.Empty);
-        }
-
-        public DateTime GetLocalNow(Guid userId)
+        public DateTime GetLocalNow(Guid userId = default)
         {
             var timeZone = GetLocalTimeZone(userId);
 
             return TimeZoneInfo.ConvertTimeFromUtc(GetUtcNow(), timeZone);
         }
 
-        public TimeZoneInfo GetLocalTimeZone()
-        {
-            return GetLocalTimeZone(Guid.Empty);
-        }
-
-        public TimeZoneInfo GetLocalTimeZone(Guid userId)
+        public TimeZoneInfo GetLocalTimeZone(Guid userId = default)
         {
             var service = ServiceFactory.GetUserService(userId);
 
