@@ -28,7 +28,6 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
             Assert.False(cache.Contains(cacheKey));
         }
 
-
         [Fact]
         public async Task GetOrAdd_ShouldBlockWhenAddingKey()
         {
@@ -36,11 +35,11 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
 
             var callCount = 0;
 
-            string factory()
+            Guid factory()
             {
                 Interlocked.Increment(ref callCount);
                 Task.Delay(100);
-                return null;
+                return Guid.NewGuid();
             }
 
             var tasks = Enumerable.Range(0, 10).Select(_ => Task.Run(() => cache.GetOrAdd(cacheKey, factory, TimeSpan.FromMinutes(1))));
@@ -48,6 +47,18 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
             await Task.WhenAll(tasks);
 
             Assert.Equal(1, callCount);
+        }
+
+        [Fact]
+        public void GetOrAdd_ShouldAddNullValues()
+        {
+            var cacheKey = Guid.NewGuid().ToString();
+
+            cache.GetOrAdd(cacheKey, (string)null, TimeSpan.FromMinutes(1));
+            var exists = cache.Get(cacheKey, out string value);
+
+            Assert.True(exists);
+            Assert.Null(value);
         }
     }
 }

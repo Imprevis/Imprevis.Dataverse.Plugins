@@ -10,7 +10,7 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
 
         public DateTimeServiceTests()
         {
-            dateTime = new DateTimeService(ServiceFactory);
+            dateTime = new DateTimeService(ServiceFactory, Context);
         }
 
         [Fact]
@@ -43,7 +43,6 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
 
             Assert.Equal(expected, actual);
         }
-
 
         [Fact]
         public void ConvertToUtc_ShouldConvertAccurately()

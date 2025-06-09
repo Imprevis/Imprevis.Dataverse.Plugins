@@ -1,7 +1,6 @@
 namespace Imprevis.Dataverse.Plugins.Test
 {
     using Imprevis.Dataverse.Plugins;
-    using Imprevis.Dataverse.Plugins.Extensions;
     using Imprevis.Dataverse.Plugins.Test.Requests;
     using Microsoft.Xrm.Sdk;
 
@@ -9,33 +8,26 @@ namespace Imprevis.Dataverse.Plugins.Test
 
     public class TestPluginRunner : IPluginRunner
     {
-        public TestPluginRunner(IDataverseServiceFactory factory, IPluginExecutionContext context, ILoggingService logger)
+        public TestPluginRunner(IPluginExecutionContext context, IDataverseServiceFactory factory, IDateTimeService dateTime, ILoggingService logger)
         {
-            Factory = factory;
             Context = context;
+            Factory = factory;
+            DateTime = dateTime;
             Logger = logger;
         }
 
         public IDataverseServiceFactory Factory { get; }
         public IPluginExecutionContext Context { get; }
         public ILoggingService Logger { get; }
+        public IDateTimeService DateTime { get; }
 
         public void Execute()
         {
-            var adminService = Factory.GetAdminService();
-            var adminName = adminService.Execute(new GetUserName());
-            Logger.LogInformation("Admin Name: " + adminName);
-
             var userService = Factory.GetUserService();
             var userName = userService.Execute(new GetUserName());
             Logger.LogInformation("User Name: " + userName);
             
-            var initService = Factory.GetUserService(Context.UserId);
-            var initName = initService.Execute(new GetUserName());
-            Logger.LogInformation("Init Name: " + initName);
-
-
-            throw new InvalidPluginExecutionException($"Admin Name = {adminName} | User Name = {userName} | Init Name = {initName}");
+            throw new InvalidPluginExecutionException($"User Name = {userName} | DateTime = {DateTime.GetLocalNow()}");
         }
     }
 }
