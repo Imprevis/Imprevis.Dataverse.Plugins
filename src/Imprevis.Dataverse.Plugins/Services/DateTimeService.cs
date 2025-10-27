@@ -15,16 +15,17 @@
         public IDataverseServiceFactory ServiceFactory { get; }
         public IPluginExecutionContext Context { get; }
 
-        public DateTime GetUtcNow()
+        public DateTimeOffset GetUtcNow()
         {
-            return DateTime.UtcNow;
+            return DateTimeOffset.UtcNow;
         }
 
-        public DateTime GetLocalNow(Guid userId = default)
+        public DateTimeOffset GetLocalNow(Guid userId = default)
         {
+            var utcNow = GetUtcNow();
             var timeZone = GetLocalTimeZone(userId);
 
-            return TimeZoneInfo.ConvertTimeFromUtc(GetUtcNow(), timeZone);
+            return TimeZoneInfo.ConvertTime(utcNow, timeZone);
         }
 
         public TimeZoneInfo GetLocalTimeZone(Guid userId = default)
@@ -42,16 +43,6 @@
             var service = ServiceFactory.GetUserService(userId);
 
             return service.Execute(new GetUserTimeZoneInfo(userId));
-        }
-
-        public DateTime ConvertToUtc(DateTime dateTime)
-        {
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime);
-        }
-
-        public DateTime ConvertToUtc(DateTime dateTime, TimeZoneInfo timeZone)
-        {
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime, timeZone);
         }
     }
 }

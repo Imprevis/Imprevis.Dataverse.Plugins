@@ -46,6 +46,23 @@
         }
 
         /// <summary>
+        /// Gets the target entity from the InputParameters of the plugin context and converts it to the specified type.
+        /// </summary>
+        public static T GetTargetWithPreImage<T>(this IPluginExecutionContext context) where T : Entity
+        {
+            return GetTarget(context).Coalesce(GetPreImage(context)).ToEntity<T>();
+        }
+
+
+        /// <summary>
+        /// Gets the target entity from the InputParameters of the plugin context and converts it to the specified type.
+        /// </summary>
+        public static T GetTargetWithPostImage<T>(this IPluginExecutionContext context) where T : Entity
+        {
+            return GetTarget(context).Coalesce(GetPostImage(context)).ToEntity<T>();
+        }
+
+        /// <summary>
         /// Gets the target entity reference from the InputParameters of the plugin context.
         /// </summary>
         public static EntityReference GetTargetReference(this IPluginExecutionContext context)
@@ -77,7 +94,7 @@
         /// </summary>
         public static T GetPreImage<T>(this IPluginExecutionContext context) where T: Entity
         {
-            return GetPreImage(context).ToEntity<T>();
+            return GetPreImage(context)?.ToEntity<T>();
         }
 
         /// <summary>
@@ -93,7 +110,7 @@
         /// </summary>
         public static T GetPostImage<T>(this IPluginExecutionContext context) where T: Entity
         {
-            return GetPostImage(context).ToEntity<T>();
+            return GetPostImage(context)?.ToEntity<T>();
         }
 
         /// <summary>
