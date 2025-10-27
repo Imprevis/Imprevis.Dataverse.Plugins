@@ -93,20 +93,28 @@
 
             foreach (var attribute in entity.Attributes)
             {
-                entity.Attributes[attribute.Key] = attribute.Value;
+                newEntity.Attributes[attribute.Key] = attribute.Value;
             }
 
             foreach (var formattedValue in entity.FormattedValues)
             {
-                entity.FormattedValues[formattedValue.Key] = formattedValue.Value;
+                newEntity.FormattedValues[formattedValue.Key] = formattedValue.Value;
             }
 
             foreach (var keyAttribute in entity.KeyAttributes)
             {
-                entity.KeyAttributes[keyAttribute.Key] = keyAttribute.Value;
+                newEntity.KeyAttributes[keyAttribute.Key] = keyAttribute.Value;
             }
 
             return newEntity;
+        }
+
+        /// <summary>
+        /// Clones the entity, creating a new instance with the same attributes and values.
+        /// </summary>
+        public static T Clone<T>(this Entity entity) where T : Entity
+        {
+            return Clone(entity).ToEntity<T>();
         }
 
         /// <summary>
@@ -149,6 +157,14 @@
             }
 
             return newEntity;
+        }
+
+        /// <summary>
+        /// Coalesces the entities into the source entity in the given order.
+        /// </summary>
+        public static T Coalesce<T>(this Entity baseEntity, params Entity[] entities) where T : Entity
+        {
+            return Coalesce(baseEntity, entities).ToEntity<T>();
         }
     }
 }
