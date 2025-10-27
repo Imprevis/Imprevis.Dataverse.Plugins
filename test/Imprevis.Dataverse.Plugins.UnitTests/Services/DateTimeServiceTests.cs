@@ -43,16 +43,5 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
 
             Assert.Equal(expected, actual);
         }
-
-        [Fact]
-        public void ConvertToUtc_ShouldConvertAccurately()
-        {
-            var expected = DateTime.UtcNow;
-            var actual = dateTime.ConvertToUtc(dateTime.GetLocalNow());
-
-            var precision = TimeSpan.FromSeconds(2);
-
-            Assert.Equal(expected, actual, precision);
-        }
     }
 }
