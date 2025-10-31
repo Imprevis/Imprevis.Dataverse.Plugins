@@ -67,7 +67,7 @@
         /// <summary>
         /// Gets the value of an OptionSetValue from an entity, or returns a default value if it doesn't exist.
         /// </summary>
-        public static T? GetOptionSetValue<T>(this Entity entity, string attributeName) where T: struct
+        public static T? GetOptionSetValue<T>(this Entity entity, string attributeName) where T : struct
         {
             var value = entity.GetOptionSetValue(attributeName);
             var success = Enum.TryParse(value?.ToString(), out T result);
@@ -131,6 +131,11 @@
 
             foreach (var entity in entities)
             {
+                if (entity == null)
+                {
+                    continue;
+                }
+
                 foreach (var attribute in entity.Attributes)
                 {
                     if (!newEntity.Attributes.ContainsKey(attribute.Key))
