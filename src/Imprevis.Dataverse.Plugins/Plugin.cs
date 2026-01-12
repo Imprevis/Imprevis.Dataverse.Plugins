@@ -57,8 +57,8 @@ namespace Imprevis.Dataverse.Plugins
             services.AddSingleton<IDateTimeService, DateTimeService>();
             services.AddSingleton<IHttpService, HttpService>();
             services.AddSingleton<ILoggingService, LoggingService>();
-            services.AddSingleton<IConfigurationService>(p => new ConfigurationService(unsecure, secure));
-            services.AddSingleton<IRegistrationService, RegistrationService>();
+            services.AddSingleton<IPluginConfigService>(p => new PluginConfigService(unsecure, secure));
+            services.AddSingleton<IPluginRegistrationService, PluginRegistrationService>();
 
             services.AddTransient(typeof(TRunner));
 
@@ -68,7 +68,7 @@ namespace Imprevis.Dataverse.Plugins
 
             try
             {
-                var registrationService = provider.Get<IRegistrationService>();
+                var registrationService = provider.Get<IPluginRegistrationService>();
                 if (!registrationService.IsValid(pluginType))
                 {
                     throw new InvalidPluginExecutionException($"Plugin '{pluginType.FullName}' is not registered correctly.");

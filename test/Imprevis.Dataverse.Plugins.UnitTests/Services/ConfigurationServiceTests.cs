@@ -6,12 +6,12 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
 
     public class ConfigurationServiceTests
     {
-        private IConfigurationService config;
+        private IPluginConfigService config;
 
         [Fact]
         public void GetUnsecure_ShouldDeserializeJson()
         {
-            config = new ConfigurationService("\"value\"", string.Empty);
+            config = new PluginConfigService("\"value\"", string.Empty);
 
             var actual = config.GetUnsecure<string>();
 
@@ -21,7 +21,7 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
         [Fact]
         public void GetUnsecure_ShouldDeserializeXml()
         {
-            config = new ConfigurationService("<string>value</string>", string.Empty);
+            config = new PluginConfigService("<string>value</string>", string.Empty);
 
             var actual = config.GetUnsecure<string>(SerializationFormat.Xml);
 
@@ -31,7 +31,7 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
         [Fact]
         public void GetUnsecure_ShouldThrowException_WhenEmptyString()
         {
-            config = new ConfigurationService(string.Empty, string.Empty);
+            config = new PluginConfigService(string.Empty, string.Empty);
 
             Assert.Throws<InvalidPluginExecutionException>(() =>
             {
@@ -42,7 +42,7 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
         [Fact]
         public void GetSecure_ShouldDeserializeJson()
         {
-            config = new ConfigurationService(string.Empty, "\"value\"");
+            config = new PluginConfigService(string.Empty, "\"value\"");
 
             var actual = config.GetSecure<string>();
 
@@ -52,7 +52,7 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
         [Fact]
         public void GetSecure_ShouldDeserializeXml()
         {
-            config = new ConfigurationService(string.Empty, "<string>value</string>");
+            config = new PluginConfigService(string.Empty, "<string>value</string>");
 
             var actual = config.GetSecure<string>(SerializationFormat.Xml);
 
@@ -62,7 +62,7 @@ namespace Imprevis.Dataverse.Plugins.UnitTests.Services
         [Fact]
         public void GetSecure_ShouldThrowException_WhenEmptyString()
         {
-            config = new ConfigurationService(string.Empty, string.Empty);
+            config = new PluginConfigService(string.Empty, string.Empty);
 
             Assert.Throws<InvalidPluginExecutionException>(() =>
             {
