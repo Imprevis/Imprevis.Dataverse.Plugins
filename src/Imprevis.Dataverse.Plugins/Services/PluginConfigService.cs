@@ -6,12 +6,12 @@
     using System.Text.Json;
     using System.Xml.Serialization;
 
-    internal class ConfigurationService : IConfigurationService
+    internal class PluginConfigService : IPluginConfigService
     {
         private readonly string unsecure;
         private readonly string secure;
 
-        public ConfigurationService(string unsecure, string secure)
+        public PluginConfigService(string unsecure, string secure)
         {
             this.unsecure = unsecure;
             this.secure = secure;

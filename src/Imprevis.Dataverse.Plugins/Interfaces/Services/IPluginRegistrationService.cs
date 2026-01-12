@@ -2,7 +2,7 @@ namespace Imprevis.Dataverse.Plugins
 {
     using System;
 
-    internal interface IRegistrationService
+    internal interface IPluginRegistrationService
     {
         bool IsValid(Type type);
     }
