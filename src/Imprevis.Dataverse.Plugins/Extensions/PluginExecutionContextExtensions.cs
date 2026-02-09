@@ -27,9 +27,9 @@
         }
 
         /// <summary>
-        /// Gets an OrganizationRequest from the InputParameters of the plugin context.
+        /// Sets the OutputParameters of the plugin context based on the Results of an OrganizationResponse.
         /// </summary>
-        public static void SetResponse<TResponse>(this IPluginExecutionContext context, OrganizationResponse response) where TResponse : OrganizationResponse
+        public static void SetResponse<TResponse>(this IPluginExecutionContext context, TResponse response) where TResponse : OrganizationResponse
         {
             foreach (var parameter in response.Results)
             {
