@@ -38,6 +38,15 @@
         }
 
         /// <summary>
+        /// Retrieves multiple entities that match the specified <see cref="QueryBase"/> from the organization service.
+        /// </summary>
+        public static IEnumerable<TEntity> RetrieveMultiple<TEntity>(this IOrganizationService service, QueryBase query) where TEntity : Entity
+        {
+            var results = service.RetrieveMultiple(query);
+            return results.Entities.Select(e => e.ToEntity<TEntity>());
+        }
+
+        /// <summary>
         /// Retrieves the first entity that matches the specified <see cref="QueryBase"/> from the organization service or null if no entity is found.
         /// </summary>
         /// <remarks>This method adds a "TopCount" of 1 to the provided query.</remarks>

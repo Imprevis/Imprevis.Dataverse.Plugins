@@ -19,6 +19,32 @@
         }
 
         /// <summary>
+        /// Gets an OrganizationResponse from the OutputParameters of the plugin context.
+        /// </summary>
+        public static TResponse GetResponse<TResponse>(this IPluginExecutionContext context) where TResponse : OrganizationResponse
+        {
+            return context.OutputParameters as TResponse;
+        }
+
+        /// <summary>
+        /// Gets an OrganizationRequest from the InputParameters of the plugin context.
+        /// </summary>
+        public static void SetResponse<TResponse>(this IPluginExecutionContext context, OrganizationResponse response) where TResponse : OrganizationResponse
+        {
+            foreach (var parameter in response.Results)
+            {
+                if (context.OutputParameters.ContainsKey(parameter.Key))
+                {
+                    context.OutputParameters[parameter.Key] = parameter.Value;
+                }
+                else
+                {
+                    context.OutputParameters.Add(parameter.Key, parameter.Value);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the target entity from the InputParameters of the plugin context.
         /// </summary>
         public static Entity GetTarget(this IPluginExecutionContext context)
