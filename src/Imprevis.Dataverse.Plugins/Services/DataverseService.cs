@@ -108,12 +108,14 @@
         {
             logger.LogDebug("Executing Request: {0}", request.GetType().FullName);
 
-            if (request is IDataverseCachedRequest<TResponse> cachedRequest)
-            {
-                return cache.GetOrAdd(cachedRequest.CacheKey, () => request.Execute(this, logger), cachedRequest.CacheDuration);
-            }
-
             return request.Execute(this, logger);
+        }
+
+        public TResponse ExecuteCached<TResponse>(IDataverseCachedRequest<TResponse> request)
+        {
+            logger.LogDebug("Executing Cached Request: {0}", request.GetType().FullName);
+
+            return cache.GetOrAdd(request.CacheKey, () => request.Execute(this, logger), request.CacheDuration);
         }
 
         /// <summary>

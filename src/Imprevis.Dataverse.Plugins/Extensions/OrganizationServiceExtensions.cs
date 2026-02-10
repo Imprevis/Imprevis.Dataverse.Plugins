@@ -221,5 +221,13 @@
         {
             service.Delete(entityReference.LogicalName, entityReference.Id);
         }
+
+        /// <summary>
+        /// Executres an action in the organization organization using the specified request.
+        /// </summary>
+        public static TResponse Execute<TRequest, TResponse>(this IOrganizationService service, TRequest request) where TRequest : OrganizationRequest where TResponse : OrganizationResponse
+        {
+            return (TResponse)service.Execute(request);
+        }
     }
 }
