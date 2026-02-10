@@ -1,6 +1,7 @@
 ﻿namespace Imprevis.Dataverse.Plugins.Extensions
 {
     using Microsoft.Xrm.Sdk;
+    using System;
 
     /// <summary>
     /// Extensions for the DataCollection class.
@@ -12,29 +13,38 @@
         /// </summary>
         public static object Get(this DataCollection<string, object> parameters, string parameterName)
         {
-            if (parameters.ContainsKey(parameterName))
+            if (parameters.TryGetValue(parameterName, out var value))
             {
-                return parameters[parameterName];
+                return value;
             }
-            else
-            {
-                return null;
-            }
+
+            return default;
         }
 
         /// <summary>
         /// Gets a parameter from a ParameterCollection, returning a default value if the parameter doesn't exist.
         /// </summary>
-        public static T Get<T>(this DataCollection<string, object> parameters, string parameterName, T defaultValue = default)
+        public static TResult Get<TResult>(this DataCollection<string, object> parameters, string parameterName, TResult defaultValue = default)
         {
-            if (parameters.ContainsKey(parameterName))
+            if (parameters.TryGetValue(parameterName, out var value))
             {
-                return (T)parameters[parameterName];
+                return (TResult)value;
             }
-            else
+
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Gets a parameter from a ParameterCollection, runnig it through the parser method to transform the result.
+        /// </summary>
+        public static TResult Get<TResult>(this DataCollection<string, object> parameters, string parameterName, Func<object, TResult> parser)
+        {
+            if (parameters.TryGetValue(parameterName, out var value))
             {
-                return defaultValue;
+                return parser(value);
             }
+
+            return default;
         }
 
         /// <summary>

@@ -2,12 +2,22 @@
 {
     using Microsoft.Xrm.Sdk;
     using System;
+    using System.Linq;
 
     /// <summary>
     /// Extensions for the Entity class.
     /// </summary>
     public static class EntityExtensions
     {
+        /// <summary>
+        /// Converts any early-bound entity to an <see cref="Entity"/> object.
+        /// </summary>
+        /// <remarks>This is useful for return an Entity in a custom action due to serialization issues with early-bound types.</remarks>
+        public static Entity ToEntity(this Entity entity)
+        {
+            return entity.ToEntity<Entity>();
+        }
+
         /// <summary>
         /// Gets the value of an AliasedValue from an entity, using the alias name and attribute name.
         /// </summary>

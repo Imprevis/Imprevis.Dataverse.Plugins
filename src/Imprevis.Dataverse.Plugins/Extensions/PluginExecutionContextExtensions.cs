@@ -3,6 +3,7 @@
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -33,13 +34,17 @@
         {
             foreach (var parameter in response.Results)
             {
-                if (context.OutputParameters.ContainsKey(parameter.Key))
+                switch (parameter.Value)
                 {
-                    context.OutputParameters[parameter.Key] = parameter.Value;
-                }
-                else
-                {
-                    context.OutputParameters.Add(parameter.Key, parameter.Value);
+                    case Entity e:
+                        context.OutputParameters.Add(parameter.Key, e.ToEntity());
+                        break;
+                    case IEnumerable<Entity> e:
+                        context.OutputParameters.Add(parameter.Key, e.ToEntityCollection());
+                        break;
+                    default:
+                        context.OutputParameters.Add(parameter.Key, parameter.Value);
+                        break;
                 }
             }
         }
@@ -66,7 +71,7 @@
         /// <summary>
         /// Gets the target entity from the InputParameters of the plugin context and converts it to the specified type.
         /// </summary>
-        public static T GetTarget<T>(this IPluginExecutionContext context) where T: Entity
+        public static T GetTarget<T>(this IPluginExecutionContext context) where T : Entity
         {
             return GetTarget(context).ToEntity<T>();
         }
@@ -118,7 +123,7 @@
         /// <summary>
         /// Gets the pre-image Entity from the plugin context and converts it to the specified type.
         /// </summary>
-        public static T GetPreImage<T>(this IPluginExecutionContext context) where T: Entity
+        public static T GetPreImage<T>(this IPluginExecutionContext context) where T : Entity
         {
             return GetPreImage(context)?.ToEntity<T>();
         }
@@ -134,7 +139,7 @@
         /// <summary>
         /// Gets the post-image Entity from the plugin context and converts it to the specified type.
         /// </summary>
-        public static T GetPostImage<T>(this IPluginExecutionContext context) where T: Entity
+        public static T GetPostImage<T>(this IPluginExecutionContext context) where T : Entity
         {
             return GetPostImage(context)?.ToEntity<T>();
         }

@@ -20,5 +20,13 @@
         /// <param name="request">Request to execute.</param>
         /// <returns>Response object returned by the request.</returns>
         TResponse Execute<TResponse>(IDataverseRequest<TResponse> request);
+
+        /// <summary>
+        /// Execute a cached request against the Dataverse service and return a response, using the cache if the response is still valid.
+        /// </summary>
+        /// <typeparam name="TResponse">Type of the response.</typeparam>
+        /// <param name="request">Request to execute.</param>
+        /// <returns>Response object returned by the request.</returns>
+        TResponse ExecuteCached<TResponse>(IDataverseCachedRequest<TResponse> request);
     }
 }
