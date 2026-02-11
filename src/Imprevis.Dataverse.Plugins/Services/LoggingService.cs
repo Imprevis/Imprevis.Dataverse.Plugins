@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.PluginTelemetry;
 
-internal class LoggingService(ITracingService tracingService, ILogger logger = null) : ILoggingService
+internal class LoggingService(ITracingService tracingService, ILogger? logger = null) : ILoggingService
 {
     public LogLevel LogLevel { get; set; } = LogLevel.Information;
 

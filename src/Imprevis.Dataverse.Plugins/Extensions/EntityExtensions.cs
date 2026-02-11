@@ -20,7 +20,7 @@ public static class EntityExtensions
     /// <summary>
     /// Gets the value of an AliasedValue from an entity, using the alias name and attribute name.
     /// </summary>
-    public static T GetAliasedValue<T>(this Entity entity, string aliasName, string attributeName, T defaultValue = default)
+    public static T? GetAliasedValue<T>(this Entity entity, string aliasName, string attributeName, T? defaultValue = default)
     {
         if (entity == null)
         {
@@ -39,7 +39,7 @@ public static class EntityExtensions
     /// <summary>
     /// Gets the formatted value of an AliasedValue from an entity, using the alias name and attribute name.
     /// </summary>
-    public static string GetAliasedFormattedValue(this Entity entity, string aliasName, string fieldName, string defaultValue = null)
+    public static string? GetAliasedFormattedValue(this Entity entity, string aliasName, string fieldName, string? defaultValue = null)
     {
         return entity.GetFormattedValue($"{aliasName}.{fieldName}", defaultValue);
     }
@@ -47,7 +47,7 @@ public static class EntityExtensions
     /// <summary>
     /// Gets the formatted value of an attribute from an entity.
     /// </summary>
-    public static string GetFormattedValue(this Entity entity, string fieldName, string defaultValue = null)
+    public static string? GetFormattedValue(this Entity entity, string fieldName, string? defaultValue = null)
     {
         if (entity.FormattedValues.ContainsKey(fieldName))
         {
@@ -129,7 +129,7 @@ public static class EntityExtensions
     /// <summary>
     /// Coalesces the entities into the source entity in the given order.
     /// </summary>
-    public static Entity Coalesce(this Entity baseEntity, params Entity[] entities)
+    public static Entity Coalesce(this Entity baseEntity, params Entity?[] entities)
     {
         if (baseEntity == null)
         {

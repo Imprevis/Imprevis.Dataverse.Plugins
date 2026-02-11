@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk;
 
 public class TestPlugin : Plugin<TestPluginRunner> { }
 
-public class TestPluginRunner(IPluginExecutionContext context, IDataverseServiceFactory factory, IDateTimeService dateTime, ILoggingService logger) : IPluginRunner
+public class TestPluginRunner(IDataverseServiceFactory factory, IDateTimeService dateTime, ILoggingService logger) : IPluginRunner
 {
     public void Execute()
     {

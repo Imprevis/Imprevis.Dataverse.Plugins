@@ -100,7 +100,7 @@ internal class DataverseService(IOrganizationService service, ICacheService cach
         return request.Execute(this, logger);
     }
 
-    public TResponse ExecuteCached<TResponse>(IDataverseCachedRequest<TResponse> request)
+    public TResponse? ExecuteCached<TResponse>(IDataverseCachedRequest<TResponse> request)
     {
         logger.LogDebug("Executing Cached Request: {0}", request.GetType().FullName);
 

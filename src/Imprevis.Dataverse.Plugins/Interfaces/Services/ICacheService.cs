@@ -24,7 +24,7 @@ public interface ICacheService
     /// <param name="key">Key of the cache item.</param>
     /// <param name="value">Output value.</param>
     /// <returns>A boolean indicating whether the item was found in the cache.</returns>
-    bool Get<T>(string key, out T value);
+    bool Get<T>(string key, out T? value);
 
     /// <summary>
     /// Get a value from the cache or add it if it doesn't exist.
@@ -34,7 +34,7 @@ public interface ICacheService
     /// <param name="value">Value to cache if the key doesn't exist already.</param>
     /// <param name="duration">Duration to cache the value.</param>
     /// <returns>The value from the cache.</returns>
-    T GetOrAdd<T>(string key, T value, TimeSpan duration);
+    T? GetOrAdd<T>(string key, T value, TimeSpan duration);
 
     /// <summary>
     /// Get a value from the cache or add it if it doesn't exist by calling the factory function.
@@ -44,7 +44,7 @@ public interface ICacheService
     /// <param name="factory">Function to execute to get the value if the key doesn't exist alraedy.</param>
     /// <param name="duration">Duration to cache the value.</param>
     /// <returns>The value from the cache.</returns>
-    T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration);
+    T? GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration);
 
     /// <summary>
     /// Remove a value from the cache.
@@ -59,5 +59,5 @@ public interface ICacheService
     /// <param name="key">Key of the cache item.</param>
     /// <param name="value">Value to cache.</param>
     /// <param name="duration">Duration to cache the value.</param>
-    void Set<T>(string key, T value, TimeSpan duration);
+    void Set<T>(string key, T? value, TimeSpan duration);
 }

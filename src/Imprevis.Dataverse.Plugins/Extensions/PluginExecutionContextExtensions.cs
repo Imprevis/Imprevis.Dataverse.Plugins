@@ -14,7 +14,7 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets an OrganizationRequest from the InputParameters of the plugin context.
     /// </summary>
-    public static TRequest GetRequest<TRequest>(this IPluginExecutionContext context) where TRequest : OrganizationRequest
+    public static TRequest? GetRequest<TRequest>(this IPluginExecutionContext context) where TRequest : OrganizationRequest
     {
         return context.InputParameters as TRequest;
     }
@@ -22,7 +22,7 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets an OrganizationResponse from the OutputParameters of the plugin context.
     /// </summary>
-    public static TResponse GetResponse<TResponse>(this IPluginExecutionContext context) where TResponse : OrganizationResponse
+    public static TResponse? GetResponse<TResponse>(this IPluginExecutionContext context) where TResponse : OrganizationResponse
     {
         return context.OutputParameters as TResponse;
     }
@@ -115,7 +115,7 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets the pre-image Entity from the plugin context.
     /// </summary>
-    public static Entity GetPreImage(this IPluginExecutionContext context)
+    public static Entity? GetPreImage(this IPluginExecutionContext context)
     {
         return context.PreEntityImages.FirstOrDefault().Value;
     }
@@ -123,7 +123,7 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets the pre-image Entity from the plugin context and converts it to the specified type.
     /// </summary>
-    public static T GetPreImage<T>(this IPluginExecutionContext context) where T : Entity
+    public static T? GetPreImage<T>(this IPluginExecutionContext context) where T : Entity
     {
         return GetPreImage(context)?.ToEntity<T>();
     }
@@ -131,7 +131,7 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets the post-image Entity from the plugin context.
     /// </summary>
-    public static Entity GetPostImage(this IPluginExecutionContext context)
+    public static Entity? GetPostImage(this IPluginExecutionContext context)
     {
         return context.PostEntityImages.FirstOrDefault().Value;
     }
@@ -139,7 +139,7 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets the post-image Entity from the plugin context and converts it to the specified type.
     /// </summary>
-    public static T GetPostImage<T>(this IPluginExecutionContext context) where T : Entity
+    public static T? GetPostImage<T>(this IPluginExecutionContext context) where T : Entity
     {
         return GetPostImage(context)?.ToEntity<T>();
     }
