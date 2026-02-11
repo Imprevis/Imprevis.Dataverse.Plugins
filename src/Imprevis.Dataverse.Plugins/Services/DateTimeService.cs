@@ -1,48 +1,38 @@
-﻿namespace Imprevis.Dataverse.Plugins.Services
+﻿namespace Imprevis.Dataverse.Plugins.Services;
+
+using Imprevis.Dataverse.Plugins.Requests;
+using Microsoft.Xrm.Sdk;
+using System;
+
+internal class DateTimeService(IDataverseServiceFactory serviceFactory, IPluginExecutionContext context) : IDateTimeService
 {
-    using Imprevis.Dataverse.Plugins.Requests;
-    using Microsoft.Xrm.Sdk;
-    using System;
-
-    internal class DateTimeService : IDateTimeService
+    public DateTimeOffset GetUtcNow()
     {
-        public DateTimeService(IDataverseServiceFactory serviceFactory, IPluginExecutionContext context)
+        return DateTimeOffset.UtcNow;
+    }
+
+    public DateTimeOffset GetLocalNow(Guid userId = default)
+    {
+        var utcNow = GetUtcNow();
+        var timeZone = GetLocalTimeZone(userId);
+
+        return TimeZoneInfo.ConvertTime(utcNow, timeZone);
+    }
+
+    public TimeZoneInfo GetLocalTimeZone(Guid userId = default)
+    {
+        if (userId == null)
         {
-            ServiceFactory = serviceFactory;
-            Context = context;
+            throw new ArgumentNullException(nameof(userId));
         }
 
-        public IDataverseServiceFactory ServiceFactory { get; }
-        public IPluginExecutionContext Context { get; }
-
-        public DateTimeOffset GetUtcNow()
+        if (userId == default)
         {
-            return DateTimeOffset.UtcNow;
+            userId = context.UserId;
         }
 
-        public DateTimeOffset GetLocalNow(Guid userId = default)
-        {
-            var utcNow = GetUtcNow();
-            var timeZone = GetLocalTimeZone(userId);
+        var service = serviceFactory.GetUserService(userId);
 
-            return TimeZoneInfo.ConvertTime(utcNow, timeZone);
-        }
-
-        public TimeZoneInfo GetLocalTimeZone(Guid userId = default)
-        {
-            if (userId == null)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
-
-            if (userId == default)
-            {
-                userId = Context.UserId;
-            }
-
-            var service = ServiceFactory.GetUserService(userId);
-
-            return service.Execute(new GetUserTimeZoneInfo(userId));
-        }
+        return service.Execute(new GetUserTimeZoneInfo(userId));
     }
 }

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
+	<LangVersion>14.0</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Imprevis.Dataverse.Plugins.UnitTests.snk</AssemblyOriginatorKeyFile>
     
