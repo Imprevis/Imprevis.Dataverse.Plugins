@@ -1,6 +1,7 @@
 namespace Imprevis.Dataverse.Plugins
 {
     using System;
+    using Imprevis.Dataverse.Plugins.Extensions;
     using Imprevis.Dataverse.Plugins.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Xrm.Sdk;
@@ -74,8 +75,7 @@ namespace Imprevis.Dataverse.Plugins
                     throw new InvalidPluginExecutionException($"Plugin '{pluginType.FullName}' is not registered correctly.");
                 }
 
-                var runner = provider.Get<TRunner>();
-                runner.Execute();
+                ExecuteInternal(provider);
             }
             catch (Exception ex)
             {
@@ -92,8 +92,78 @@ namespace Imprevis.Dataverse.Plugins
         }
 
         /// <summary>
+        /// Execute the runner logic.
+        /// </summary>
+        /// <param name="provider">The service provider.</param>
+        protected virtual void ExecuteInternal(IServiceProvider provider)
+        {
+            var runner = provider.Get<TRunner>();
+            runner.Execute();
+        }
+
+        /// <summary>
         /// Configure additional services in the dependency injection container.
         /// </summary>
+        /// <param name="services">The service collection.</param>
         public virtual void ConfigureServices(IServiceCollection services) { }
+    }
+
+    /// <summary>
+    /// Base class for actions.
+    /// </summary>
+    /// <typeparam name="TRunner">Type of the action runner.</typeparam>
+    /// <typeparam name="TRequest">Type of the request object.</typeparam>
+    public abstract class Plugin<TRunner, TRequest> : Plugin<TRunner> where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest
+    {
+        /// <inheritdoc/>
+        public Plugin() : base() { }
+
+        /// <inheritdoc/>
+        public Plugin(string unsecure) : base(unsecure) { }
+
+        /// <inheritdoc/>
+        public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
+
+        /// <inheritdoc/>
+        protected override void ExecuteInternal(IServiceProvider provider)
+        {
+            var executionContext = provider.Get<IPluginExecutionContext>();
+
+            var request = executionContext.GetRequest<TRequest>();
+
+            var runner = provider.Get<TRunner>();
+            runner.Execute(request);
+        }
+    }
+
+    /// <summary>
+    /// Base class for custom actions with response.
+    /// </summary>
+    /// <typeparam name="TRunner">Type of the action runner.</typeparam>
+    /// <typeparam name="TRequest">Type of the request object.</typeparam>
+    /// <typeparam name="TResponse">Type of the response object.</typeparam>
+    public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin<TRunner> where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest where TResponse : OrganizationResponse
+    {
+        /// <inheritdoc/>
+        public Plugin() : base() { }
+
+        /// <inheritdoc/>
+        public Plugin(string unsecure) : base(unsecure) { }
+
+        /// <inheritdoc/>
+        public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
+
+        /// <inheritdoc/>
+        protected override void ExecuteInternal(IServiceProvider provider)
+        {
+            var executionContext = provider.Get<IPluginExecutionContext>();
+
+            var request = executionContext.GetRequest<TRequest>();
+
+            var runner = provider.Get<TRunner>();
+            var response = runner.Execute(request);
+
+            executionContext.SetResponse(response);
+        }
     }
 }
