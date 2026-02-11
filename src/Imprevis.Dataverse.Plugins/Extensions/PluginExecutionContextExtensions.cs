@@ -14,17 +14,23 @@ public static class PluginExecutionContextExtensions
     /// <summary>
     /// Gets an OrganizationRequest from the InputParameters of the plugin context.
     /// </summary>
-    public static TRequest? GetRequest<TRequest>(this IPluginExecutionContext context) where TRequest : OrganizationRequest
+    public static TRequest? GetRequest<TRequest>(this IPluginExecutionContext context) where TRequest : OrganizationRequest, new()
     {
-        return context.InputParameters as TRequest;
+        return new TRequest
+        {
+            Parameters = context.InputParameters
+        };
     }
 
     /// <summary>
     /// Gets an OrganizationResponse from the OutputParameters of the plugin context.
     /// </summary>
-    public static TResponse? GetResponse<TResponse>(this IPluginExecutionContext context) where TResponse : OrganizationResponse
+    public static TResponse? GetResponse<TResponse>(this IPluginExecutionContext context) where TResponse : OrganizationResponse, new()
     {
-        return context.OutputParameters as TResponse;
+        return new TResponse
+        {
+            Results = context.OutputParameters
+        };
     }
 
     /// <summary>
