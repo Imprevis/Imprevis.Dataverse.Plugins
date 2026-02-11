@@ -135,7 +135,7 @@ public abstract class Plugin<TRunner> : Plugin where TRunner : IPluginRunner
 /// </summary>
 /// <typeparam name="TRunner">Type of the action runner.</typeparam>
 /// <typeparam name="TRequest">Type of the request object.</typeparam>
-public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest
+public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest, new()
 {
     /// <inheritdoc/>
     public Plugin() : base() { }
@@ -174,7 +174,7 @@ public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPlugin
 /// <typeparam name="TRunner">Type of the action runner.</typeparam>
 /// <typeparam name="TRequest">Type of the request object.</typeparam>
 /// <typeparam name="TResponse">Type of the response object.</typeparam>
-public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest where TResponse : OrganizationResponse
+public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest, new() where TResponse : OrganizationResponse
 {
     /// <inheritdoc/>
     public Plugin() : base() { }
