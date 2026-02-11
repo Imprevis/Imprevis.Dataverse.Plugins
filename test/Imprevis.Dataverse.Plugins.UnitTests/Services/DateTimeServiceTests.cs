@@ -1,47 +1,46 @@
-namespace Imprevis.Dataverse.Plugins.UnitTests.Services
+namespace Imprevis.Dataverse.Plugins.UnitTests.Services;
+
+using Imprevis.Dataverse.Plugins.Services;
+using System;
+using Xunit;
+
+public class DateTimeServiceTests : TestBase
 {
-    using Imprevis.Dataverse.Plugins.Services;
-    using System;
-    using Xunit;
+    private readonly IDateTimeService dateTime;
 
-    public class DateTimeServiceTests : TestBase
+    public DateTimeServiceTests()
     {
-        private readonly IDateTimeService dateTime;
+        dateTime = new DateTimeService(ServiceFactory, Context);
+    }
 
-        public DateTimeServiceTests()
-        {
-            dateTime = new DateTimeService(ServiceFactory, Context);
-        }
+    [Fact]
+    public void GetUtcNow_ShouldReturnTimeCloseToUtcNow()
+    {
+        var expected = DateTime.UtcNow;
+        var actual = dateTime.GetUtcNow();
+    
+        var precision = TimeSpan.FromSeconds(2);
 
-        [Fact]
-        public void GetUtcNow_ShouldReturnTimeCloseToUtcNow()
-        {
-            var expected = DateTime.UtcNow;
-            var actual = dateTime.GetUtcNow();
-        
-            var precision = TimeSpan.FromSeconds(2);
+        Assert.Equal(expected, actual, precision);
+    }
 
-            Assert.Equal(expected, actual, precision);
-        }
+    [Fact]
+    public void GetLocalNow_ShouldReturnTimeCloseToNow()
+    {
+        var expected = DateTime.Now;
+        var actual = dateTime.GetLocalNow();
 
-        [Fact]
-        public void GetLocalNow_ShouldReturnTimeCloseToNow()
-        {
-            var expected = DateTime.Now;
-            var actual = dateTime.GetLocalNow();
+        var precision = TimeSpan.FromSeconds(2);
 
-            var precision = TimeSpan.FromSeconds(2);
+        Assert.Equal(expected, actual, precision);
+    }
 
-            Assert.Equal(expected, actual, precision);
-        }
+    [Fact]
+    public void GetLocalTimeZone_ShouldReturnLocalTimeZone()
+    {
+        var expected = TimeZoneInfo.Local;
+        var actual = dateTime.GetLocalTimeZone();
 
-        [Fact]
-        public void GetLocalTimeZone_ShouldReturnLocalTimeZone()
-        {
-            var expected = TimeZoneInfo.Local;
-            var actual = dateTime.GetLocalTimeZone();
-
-            Assert.Equal(expected, actual);
-        }
+        Assert.Equal(expected, actual);
     }
 }

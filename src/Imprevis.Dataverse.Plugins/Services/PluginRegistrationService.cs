@@ -1,43 +1,35 @@
-﻿namespace Imprevis.Dataverse.Plugins.Services
+﻿namespace Imprevis.Dataverse.Plugins.Services;
+
+using Microsoft.Xrm.Sdk;
+using System;
+using System.Linq;
+
+internal class PluginRegistrationService(IPluginExecutionContext executionContext) : IPluginRegistrationService
 {
-    using Microsoft.Xrm.Sdk;
-    using System;
-    using System.Linq;
-
-    internal class PluginRegistrationService : IPluginRegistrationService
+    public bool IsValid(Type pluginType)
     {
-        private readonly IPluginExecutionContext executionContext;
+        var attributes = pluginType.GetCustomAttributes(typeof(RegistrationAttribute), true);
 
-        public PluginRegistrationService(IPluginExecutionContext executionContext)
+        // Don't force user to use Registrations. If there are none, consider it valid.
+        if (attributes.Length == 0)
         {
-            this.executionContext = executionContext;
+            return true;
         }
 
-        public bool IsValid(Type pluginType)
+        // Check if a Registration matches the current execution context.
+        foreach (var attribute in attributes.Cast<RegistrationAttribute>())
         {
-            var attributes = pluginType.GetCustomAttributes(typeof(RegistrationAttribute), true);
+            var isValid = attribute.Mode == executionContext.Mode &&
+                          attribute.Stage == executionContext.Stage &&
+                          attribute.Message == executionContext.MessageName &&
+                          attribute.EntityName == executionContext.PrimaryEntityName;
 
-            // Don't force user to use Registrations. If there are none, consider it valid.
-            if (attributes.Length == 0)
+            if (isValid)
             {
                 return true;
             }
-
-            // Check if a Registration matches the current execution context.
-            foreach (var attribute in attributes.Cast<RegistrationAttribute>())
-            {
-                var isValid = attribute.Mode == executionContext.Mode &&
-                              attribute.Stage == executionContext.Stage &&
-                              attribute.Message == executionContext.MessageName &&
-                              attribute.EntityName == executionContext.PrimaryEntityName;
-
-                if (isValid)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
+
+        return false;
     }
 }

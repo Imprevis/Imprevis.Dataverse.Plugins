@@ -1,73 +1,72 @@
-namespace Imprevis.Dataverse.Plugins.UnitTests.Services
+namespace Imprevis.Dataverse.Plugins.UnitTests.Services;
+
+using Imprevis.Dataverse.Plugins.Services;
+using Microsoft.Xrm.Sdk;
+using Xunit;
+
+public class ConfigurationServiceTests
 {
-    using Imprevis.Dataverse.Plugins.Services;
-    using Microsoft.Xrm.Sdk;
-    using Xunit;
+    private IPluginConfigService config;
 
-    public class ConfigurationServiceTests
+    [Fact]
+    public void GetUnsecure_ShouldDeserializeJson()
     {
-        private IPluginConfigService config;
+        config = new PluginConfigService("\"value\"", string.Empty);
 
-        [Fact]
-        public void GetUnsecure_ShouldDeserializeJson()
+        var actual = config.GetUnsecure<string>();
+
+        Assert.Equal("value", actual);
+    }
+
+    [Fact]
+    public void GetUnsecure_ShouldDeserializeXml()
+    {
+        config = new PluginConfigService("<string>value</string>", string.Empty);
+
+        var actual = config.GetUnsecure<string>(SerializationFormat.Xml);
+
+        Assert.Equal("value", actual);
+    }
+
+    [Fact]
+    public void GetUnsecure_ShouldThrowException_WhenEmptyString()
+    {
+        config = new PluginConfigService(string.Empty, string.Empty);
+
+        Assert.Throws<InvalidPluginExecutionException>(() =>
         {
-            config = new PluginConfigService("\"value\"", string.Empty);
+            config.GetUnsecure<string>();
+        });
+    }
 
-            var actual = config.GetUnsecure<string>();
+    [Fact]
+    public void GetSecure_ShouldDeserializeJson()
+    {
+        config = new PluginConfigService(string.Empty, "\"value\"");
 
-            Assert.Equal("value", actual);
-        }
+        var actual = config.GetSecure<string>();
 
-        [Fact]
-        public void GetUnsecure_ShouldDeserializeXml()
+        Assert.Equal("value", actual);
+    }
+
+    [Fact]
+    public void GetSecure_ShouldDeserializeXml()
+    {
+        config = new PluginConfigService(string.Empty, "<string>value</string>");
+
+        var actual = config.GetSecure<string>(SerializationFormat.Xml);
+
+        Assert.Equal("value", actual);
+    }
+
+    [Fact]
+    public void GetSecure_ShouldThrowException_WhenEmptyString()
+    {
+        config = new PluginConfigService(string.Empty, string.Empty);
+
+        Assert.Throws<InvalidPluginExecutionException>(() =>
         {
-            config = new PluginConfigService("<string>value</string>", string.Empty);
-
-            var actual = config.GetUnsecure<string>(SerializationFormat.Xml);
-
-            Assert.Equal("value", actual);
-        }
-
-        [Fact]
-        public void GetUnsecure_ShouldThrowException_WhenEmptyString()
-        {
-            config = new PluginConfigService(string.Empty, string.Empty);
-
-            Assert.Throws<InvalidPluginExecutionException>(() =>
-            {
-                config.GetUnsecure<string>();
-            });
-        }
-
-        [Fact]
-        public void GetSecure_ShouldDeserializeJson()
-        {
-            config = new PluginConfigService(string.Empty, "\"value\"");
-
-            var actual = config.GetSecure<string>();
-
-            Assert.Equal("value", actual);
-        }
-
-        [Fact]
-        public void GetSecure_ShouldDeserializeXml()
-        {
-            config = new PluginConfigService(string.Empty, "<string>value</string>");
-
-            var actual = config.GetSecure<string>(SerializationFormat.Xml);
-
-            Assert.Equal("value", actual);
-        }
-
-        [Fact]
-        public void GetSecure_ShouldThrowException_WhenEmptyString()
-        {
-            config = new PluginConfigService(string.Empty, string.Empty);
-
-            Assert.Throws<InvalidPluginExecutionException>(() =>
-            {
-                config.GetSecure<string>();
-            });
-        }
+            config.GetSecure<string>();
+        });
     }
 }
