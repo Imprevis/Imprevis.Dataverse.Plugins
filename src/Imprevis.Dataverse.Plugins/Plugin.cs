@@ -11,8 +11,7 @@ using Microsoft.Xrm.Sdk.PluginTelemetry;
 /// <summary>
 /// Base class for plugins.
 /// </summary>
-/// <typeparam name="TRunner">Type of the Plugin Runner.</typeparam>
-public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
+public abstract class Plugin : IPlugin
 {
     private readonly Type pluginType;
     private readonly string? unsecure;
@@ -61,8 +60,6 @@ public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
         services.AddSingleton<IPluginConfigService>(p => new PluginConfigService(unsecure, secure));
         services.AddSingleton<IPluginRegistrationService, PluginRegistrationService>();
 
-        services.AddTransient(typeof(TRunner));
-
         ConfigureServices(services);
 
         var provider = services.BuildServiceProvider();
@@ -92,28 +89,23 @@ public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
     }
 
     /// <summary>
-    /// Execute the runner logic.
-    /// </summary>
-    /// <param name="provider">The service provider.</param>
-    protected virtual void ExecuteInternal(IServiceProvider provider)
-    {
-        var runner = provider.Get<TRunner>();
-        runner.Execute();
-    }
-
-    /// <summary>
     /// Configure additional services in the dependency injection container.
     /// </summary>
     /// <param name="services">The service collection.</param>
     public virtual void ConfigureServices(IServiceCollection services) { }
+
+    /// <summary>
+    /// Execute the runner logic.
+    /// </summary>
+    /// <param name="provider">The service provider.</param>
+    protected virtual void ExecuteInternal(IServiceProvider provider) { }
 }
 
 /// <summary>
-/// Base class for actions.
+/// Base class for plugins.
 /// </summary>
-/// <typeparam name="TRunner">Type of the action runner.</typeparam>
-/// <typeparam name="TRequest">Type of the request object.</typeparam>
-public abstract class Plugin<TRunner, TRequest> : Plugin<TRunner> where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest
+/// <typeparam name="TRunner">Type of the Plugin Runner.</typeparam>
+public abstract class Plugin<TRunner> : Plugin where TRunner : IPluginRunner
 {
     /// <inheritdoc/>
     public Plugin() : base() { }
@@ -123,6 +115,42 @@ public abstract class Plugin<TRunner, TRequest> : Plugin<TRunner> where TRunner 
 
     /// <inheritdoc/>
     public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
+
+    /// <inheritdoc/>
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddTransient(typeof(TRunner));
+    }
+
+    /// <inheritdoc/>
+    protected override void ExecuteInternal(IServiceProvider provider)
+    {
+        var runner = provider.Get<TRunner>();
+        runner.Execute();
+    }
+}
+
+/// <summary>
+/// Base class for actions.
+/// </summary>
+/// <typeparam name="TRunner">Type of the action runner.</typeparam>
+/// <typeparam name="TRequest">Type of the request object.</typeparam>
+public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest
+{
+    /// <inheritdoc/>
+    public Plugin() : base() { }
+
+    /// <inheritdoc/>
+    public Plugin(string unsecure) : base(unsecure) { }
+
+    /// <inheritdoc/>
+    public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
+
+    /// <inheritdoc/>
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddTransient(typeof(TRunner));
+    }
 
     /// <inheritdoc/>
     protected override void ExecuteInternal(IServiceProvider provider)
@@ -146,7 +174,7 @@ public abstract class Plugin<TRunner, TRequest> : Plugin<TRunner> where TRunner 
 /// <typeparam name="TRunner">Type of the action runner.</typeparam>
 /// <typeparam name="TRequest">Type of the request object.</typeparam>
 /// <typeparam name="TResponse">Type of the response object.</typeparam>
-public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin<TRunner> where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest where TResponse : OrganizationResponse
+public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest where TResponse : OrganizationResponse
 {
     /// <inheritdoc/>
     public Plugin() : base() { }
@@ -156,6 +184,12 @@ public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin<TRunner> whe
 
     /// <inheritdoc/>
     public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
+
+    /// <inheritdoc/>
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddTransient(typeof(TRunner));
+    }
 
     /// <inheritdoc/>
     protected override void ExecuteInternal(IServiceProvider provider)
