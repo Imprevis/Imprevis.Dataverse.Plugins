@@ -11,7 +11,7 @@ public static class DataCollectionExtensions
     /// <summary>
     /// Gets a parameter from a ParameterCollection, returning null if the parameter doesn't exist.
     /// </summary>
-    public static object Get(this DataCollection<string, object> parameters, string parameterName)
+    public static object? Get(this DataCollection<string, object> parameters, string parameterName)
     {
         if (parameters.TryGetValue(parameterName, out var value))
         {
@@ -24,7 +24,7 @@ public static class DataCollectionExtensions
     /// <summary>
     /// Gets a parameter from a ParameterCollection, returning a default value if the parameter doesn't exist.
     /// </summary>
-    public static TResult Get<TResult>(this DataCollection<string, object> parameters, string parameterName, TResult defaultValue = default)
+    public static TResult? Get<TResult>(this DataCollection<string, object> parameters, string parameterName, TResult? defaultValue = default)
     {
         if (parameters.TryGetValue(parameterName, out var value))
         {
@@ -37,7 +37,7 @@ public static class DataCollectionExtensions
     /// <summary>
     /// Gets a parameter from a ParameterCollection, runnig it through the parser method to transform the result.
     /// </summary>
-    public static TResult Get<TResult>(this DataCollection<string, object> parameters, string parameterName, Func<object, TResult> parser)
+    public static TResult? Get<TResult>(this DataCollection<string, object> parameters, string parameterName, Func<object, TResult?> parser)
     {
         if (parameters.TryGetValue(parameterName, out var value))
         {

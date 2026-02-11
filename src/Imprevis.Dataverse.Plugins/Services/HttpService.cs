@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 internal class HttpService : IHttpService
 {
-    public TResponse Send<TResponse>(string method, string url, Stream body = null, Dictionary<string, string> headers = null, SerializationFormat format = SerializationFormat.Json)
+    public TResponse? Send<TResponse>(string method, string url, Stream? body = null, Dictionary<string, string>? headers = null, SerializationFormat format = SerializationFormat.Json)
     {
         var request = WebRequest.CreateHttp(url);
         request.Method = method;
@@ -48,7 +48,7 @@ internal class HttpService : IHttpService
         }
     }
 
-    public TResponse Send<TRequest, TResponse>(string method, string url, TRequest body, Dictionary<string, string> headers = null, SerializationFormat format = SerializationFormat.Json)
+    public TResponse? Send<TRequest, TResponse>(string method, string url, TRequest body, Dictionary<string, string>? headers = null, SerializationFormat format = SerializationFormat.Json)
     {
         headers ??= [];
 

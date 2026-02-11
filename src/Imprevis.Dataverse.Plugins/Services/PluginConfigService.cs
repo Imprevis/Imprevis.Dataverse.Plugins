@@ -6,9 +6,9 @@ using System.IO;
 using System.Text.Json;
 using System.Xml.Serialization;
 
-internal class PluginConfigService(string unsecure, string secure) : IPluginConfigService
+internal class PluginConfigService(string? unsecure, string? secure) : IPluginConfigService
 {
-    public TUnsecure GetUnsecure<TUnsecure>(SerializationFormat type = SerializationFormat.Json)
+    public TUnsecure? GetUnsecure<TUnsecure>(SerializationFormat type = SerializationFormat.Json)
     {
         if (string.IsNullOrEmpty(unsecure))
         {
@@ -18,7 +18,7 @@ internal class PluginConfigService(string unsecure, string secure) : IPluginConf
         return Deserialize<TUnsecure>(unsecure, type);
     }
 
-    public TSecure GetSecure<TSecure>(SerializationFormat type = SerializationFormat.Json)
+    public TSecure? GetSecure<TSecure>(SerializationFormat type = SerializationFormat.Json)
     {
         if (string.IsNullOrEmpty(secure))
         {
@@ -28,8 +28,13 @@ internal class PluginConfigService(string unsecure, string secure) : IPluginConf
         return Deserialize<TSecure>(secure, type);
     }
 
-    private TObject Deserialize<TObject>(string value, SerializationFormat type)
+    private TObject? Deserialize<TObject>(string? value, SerializationFormat type)
     {
+        if (value == null)
+        {
+            return default;
+        }
+
         switch (type)
         {
             case SerializationFormat.Json:

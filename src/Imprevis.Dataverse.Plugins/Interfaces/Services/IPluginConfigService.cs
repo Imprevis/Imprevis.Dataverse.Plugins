@@ -9,11 +9,11 @@ internal interface IPluginConfigService
     /// Gets the unsecure configuration settings for the plugin.
     /// </summary>
     /// <param name="format">Determins how the data is foratted. This affects which deserializer is used.</param>
-    TUnsecure GetUnsecure<TUnsecure>(SerializationFormat format = SerializationFormat.Json);
+    TUnsecure? GetUnsecure<TUnsecure>(SerializationFormat format = SerializationFormat.Json);
 
     /// <summary>
     /// Gets the secure configuration settings for the plugin.
     /// </summary>
     /// <param name="format">Determins how the data is foratted. This affects which deserializer is used.</param>
-    TSecure GetSecure<TSecure>(SerializationFormat format = SerializationFormat.Json);
+    TSecure? GetSecure<TSecure>(SerializationFormat format = SerializationFormat.Json);
 }

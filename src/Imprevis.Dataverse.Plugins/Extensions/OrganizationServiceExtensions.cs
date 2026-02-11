@@ -78,14 +78,10 @@ public static class OrganizationServiceExtensions
     /// Retrieves the first entity that matches the specified <see cref="QueryBase"/> from the organization service and converts it to the specified entity type. If no entity is found it returns null.
     /// </summary>
     /// /// <remarks>This method adds a "TopCount" of 1 to the provided query.</remarks>
-    public static TEntity RetrieveSingle<TEntity>(this IOrganizationService service, QueryBase query) where TEntity : Entity
+    public static TEntity? RetrieveSingle<TEntity>(this IOrganizationService service, QueryBase query) where TEntity : Entity
     {
         var entity = service.RetrieveSingle(query);
-        if (entity == null)
-        {
-            return null;
-        }
-        return entity.ToEntity<TEntity>();
+        return entity?.ToEntity<TEntity>();
     }
 
     /// <summary>

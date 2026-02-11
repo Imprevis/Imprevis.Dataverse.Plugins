@@ -15,8 +15,8 @@ using Microsoft.Xrm.Sdk.PluginTelemetry;
 public abstract class Plugin<TRunner> : IPlugin where TRunner : IPluginRunner
 {
     private readonly Type pluginType;
-    private readonly string unsecure;
-    private readonly string secure;
+    private readonly string? unsecure;
+    private readonly string? secure;
 
     /// <summary>
     /// Default constructor.
@@ -130,6 +130,10 @@ public abstract class Plugin<TRunner, TRequest> : Plugin<TRunner> where TRunner 
         var executionContext = provider.Get<IPluginExecutionContext>();
 
         var request = executionContext.GetRequest<TRequest>();
+        if (request == null)
+        {
+            throw new InvalidPluginExecutionException("Invalid request.");
+        }
 
         var runner = provider.Get<TRunner>();
         runner.Execute(request);
@@ -159,6 +163,10 @@ public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin<TRunner> whe
         var executionContext = provider.Get<IPluginExecutionContext>();
 
         var request = executionContext.GetRequest<TRequest>();
+        if (request == null)
+        {
+            throw new InvalidPluginExecutionException("Invalid request.");
+        }
 
         var runner = provider.Get<TRunner>();
         var response = runner.Execute(request);

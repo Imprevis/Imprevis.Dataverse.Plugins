@@ -9,10 +9,10 @@ using System;
 /// Constructor for the RegistrationAttribute.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class RegistrationAttribute(int mode, int stage, string message, string entityName = null) : Attribute
+public class RegistrationAttribute(int mode, int stage, string message, string? entityName = null) : Attribute
 {
     internal int Mode { get; } = mode;
     internal int Stage { get; } = stage;
     internal string Message { get; } = message;
-    internal string EntityName { get; } = entityName;
+    internal string? EntityName { get; } = entityName;
 }

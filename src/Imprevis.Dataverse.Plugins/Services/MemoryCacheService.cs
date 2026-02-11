@@ -25,31 +25,31 @@ internal class MemoryCacheService : ICacheService
         return cache.Contains(key);
     }
 
-    public bool Get<T>(string key, out T value)
+    public bool Get<T>(string key, out T? value)
     {
-        var tempValue = cache.Get(key);
-        if (tempValue == null)
+        var cachedValue = cache.Get(key);
+        if (cachedValue == null)
         {
             value = default;
             return false;
         }
 
-        if (tempValue == placeholder)
+        if (cachedValue == placeholder)
         {
             value = default;
             return true;
         }
 
-        value = (T)tempValue;
+        value = (T)cachedValue;
         return true;
     }
 
-    public T GetOrAdd<T>(string key, T value, TimeSpan duration)
+    public T? GetOrAdd<T>(string key, T value, TimeSpan duration)
     {
         return GetOrAdd(key, () => value, duration);
     }
 
-    public T GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration)
+    public T? GetOrAdd<T>(string key, Func<T> factory, TimeSpan duration)
     {
         var exists = Get<T>(key, out var value);
 
@@ -62,7 +62,7 @@ internal class MemoryCacheService : ICacheService
         // Item doesn't exist, let's take out a lock and check again.
         var _lock = locks.GetOrAdd(key, new SemaphoreSlim(1, 1));
         _lock.Wait();
-        
+
         try
         {
             // Now that we have an exclusive lock, try to get the item again.
@@ -90,17 +90,10 @@ internal class MemoryCacheService : ICacheService
         cache.Remove(key);
     }
 
-    public void Set<T>(string key, T value, TimeSpan duration)
+    public void Set<T>(string key, T? value, TimeSpan duration)
     {
         // MemoryCache doesn't support setting null values. Use a random object as a placeholder.
         // This allows us to explicitly cache a null value to avoid cache misses.
-        if (value == null)
-        {
-            cache.Set(key, placeholder, DateTime.UtcNow.Add(duration));
-        }
-        else
-        {
-            cache.Set(key, value, DateTime.UtcNow.Add(duration));
-        }
+        cache.Set(key, value ?? placeholder, DateTime.UtcNow.Add(duration));
     }
 }
