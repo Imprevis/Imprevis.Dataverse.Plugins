@@ -11,36 +11,8 @@ using Microsoft.Xrm.Sdk.PluginTelemetry;
 /// <summary>
 /// Base class for plugins.
 /// </summary>
-public abstract class Plugin : IPlugin
+public abstract class Plugin(string? unsecure = null, string? secure = null) : IPlugin
 {
-    private readonly Type pluginType;
-    private readonly string? unsecure;
-    private readonly string? secure;
-
-    /// <summary>
-    /// Default constructor.
-    /// </summary>
-    public Plugin()
-    {
-        this.pluginType = GetType();
-    }
-
-    /// <summary>
-    /// Constructor with unsecure configuration.
-    /// </summary>
-    public Plugin(string unsecure) : this()
-    {
-        this.unsecure = unsecure;
-    }
-
-    /// <summary>
-    /// Constructor with unsecure and secure configuration.
-    /// </summary>
-    public Plugin(string unsecure, string secure) : this(unsecure)
-    {
-        this.secure = secure;
-    }
-
     /// <inheritdoc/>
     public void Execute(IServiceProvider serviceProvider)
     {
@@ -66,13 +38,15 @@ public abstract class Plugin : IPlugin
 
         try
         {
+            var pluginType = GetType();
+
             var registrationService = provider.Get<IPluginRegistrationService>();
             if (!registrationService.IsValid(pluginType))
             {
                 throw new InvalidPluginExecutionException($"Plugin '{pluginType.FullName}' is not registered correctly.");
             }
 
-            ExecuteInternal(provider);
+            OnExecute(provider);
         }
         catch (Exception ex)
         {
@@ -98,24 +72,15 @@ public abstract class Plugin : IPlugin
     /// Execute the runner logic.
     /// </summary>
     /// <param name="provider">The service provider.</param>
-    protected virtual void ExecuteInternal(IServiceProvider provider) { }
+    public virtual void OnExecute(IServiceProvider provider) { }
 }
 
 /// <summary>
 /// Base class for plugins.
 /// </summary>
 /// <typeparam name="TRunner">Type of the Plugin Runner.</typeparam>
-public abstract class Plugin<TRunner> : Plugin where TRunner : IPluginRunner
+public abstract class Plugin<TRunner>(string? unsecure = null, string? secure = null) : Plugin(unsecure, secure) where TRunner : IPluginRunner
 {
-    /// <inheritdoc/>
-    public Plugin() : base() { }
-
-    /// <inheritdoc/>
-    public Plugin(string unsecure) : base(unsecure) { }
-
-    /// <inheritdoc/>
-    public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
-
     /// <inheritdoc/>
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -123,7 +88,7 @@ public abstract class Plugin<TRunner> : Plugin where TRunner : IPluginRunner
     }
 
     /// <inheritdoc/>
-    protected override void ExecuteInternal(IServiceProvider provider)
+    public override void OnExecute(IServiceProvider provider)
     {
         var runner = provider.Get<TRunner>();
         runner.Execute();
@@ -135,17 +100,8 @@ public abstract class Plugin<TRunner> : Plugin where TRunner : IPluginRunner
 /// </summary>
 /// <typeparam name="TRunner">Type of the action runner.</typeparam>
 /// <typeparam name="TRequest">Type of the request object.</typeparam>
-public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest, new()
+public abstract class Plugin<TRunner, TRequest>(string? unsecure = null, string? secure = null) : Plugin(unsecure, secure) where TRunner : IPluginRunner<TRequest> where TRequest : OrganizationRequest, new()
 {
-    /// <inheritdoc/>
-    public Plugin() : base() { }
-
-    /// <inheritdoc/>
-    public Plugin(string unsecure) : base(unsecure) { }
-
-    /// <inheritdoc/>
-    public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
-
     /// <inheritdoc/>
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -153,7 +109,7 @@ public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPlugin
     }
 
     /// <inheritdoc/>
-    protected override void ExecuteInternal(IServiceProvider provider)
+    public override void OnExecute(IServiceProvider provider)
     {
         var executionContext = provider.Get<IPluginExecutionContext>();
 
@@ -174,17 +130,8 @@ public abstract class Plugin<TRunner, TRequest> : Plugin where TRunner : IPlugin
 /// <typeparam name="TRunner">Type of the action runner.</typeparam>
 /// <typeparam name="TRequest">Type of the request object.</typeparam>
 /// <typeparam name="TResponse">Type of the response object.</typeparam>
-public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest, new() where TResponse : OrganizationResponse
+public abstract class Plugin<TRunner, TRequest, TResponse>(string? unsecure = null, string? secure = null) : Plugin(unsecure, secure) where TRunner : IPluginRunner<TRequest, TResponse> where TRequest : OrganizationRequest, new() where TResponse : OrganizationResponse
 {
-    /// <inheritdoc/>
-    public Plugin() : base() { }
-
-    /// <inheritdoc/>
-    public Plugin(string unsecure) : base(unsecure) { }
-
-    /// <inheritdoc/>
-    public Plugin(string unsecure, string secure) : base(unsecure, secure) { }
-
     /// <inheritdoc/>
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -192,7 +139,7 @@ public abstract class Plugin<TRunner, TRequest, TResponse> : Plugin where TRunne
     }
 
     /// <inheritdoc/>
-    protected override void ExecuteInternal(IServiceProvider provider)
+    public override void OnExecute(IServiceProvider provider)
     {
         var executionContext = provider.Get<IPluginExecutionContext>();
 
