@@ -16,6 +16,11 @@ public static class Stage
     public const int PreOperation = 20;
 
     /// <summary>
+    /// Pre-Operation
+    /// </summary>
+    public const int MainOperation = 30;
+
+    /// <summary>
     /// Post-Operation
     /// </summary>
     public const int PostOperation = 40;
