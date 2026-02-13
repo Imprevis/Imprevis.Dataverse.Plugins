@@ -30,6 +30,18 @@ internal class LoggingService(ITracingService tracingService, ILogger? logger = 
 
     public void Log(LogLevel level, string format, params object[] args)
     {
+        // Check log level first to avoid string.Format allocation if not needed
+        if (level < LogLevel)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(format) || args == null || args.Length == 0)
+        {
+            Log(level, format);
+            return;
+        }
+
         Log(level, string.Format(format, args));
     }
 
@@ -64,7 +76,7 @@ internal class LoggingService(ITracingService tracingService, ILogger? logger = 
             return;
         }
 
-        Log(level, "Exception = {0}", ex.Message);
+        Log(level, "Exception = {0} ({1})", ex.GetType().FullName, ex.Message);
 
         if (ex.InnerException != null)
         {
@@ -74,6 +86,12 @@ internal class LoggingService(ITracingService tracingService, ILogger? logger = 
 
     public void Log(LogLevel level, AttributeCollection attributes)
     {
+        if (attributes == null || attributes.Count == 0)
+        {
+            Log(level, "Attributes: <empty>");
+            return;
+        }
+
         Log(level, "Attributes");
 
         foreach (var attribute in attributes.OrderBy(x => x.Key))
@@ -84,6 +102,12 @@ internal class LoggingService(ITracingService tracingService, ILogger? logger = 
 
     public void Log(LogLevel level, ParameterCollection parameters)
     {
+        if (parameters == null || parameters.Count == 0)
+        {
+            Log(level, "Parameters: <empty>");
+            return;
+        }
+
         Log(level, "Parameters");
 
         foreach (var parameter in parameters.OrderBy(x => x.Key))
