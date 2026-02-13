@@ -114,7 +114,7 @@ public static class OrganizationServiceExtensions
                         break;
                     }
 
-                    fetchXml.SetAttributeValue("page", pageNumber++);
+                    fetchXml.SetAttributeValue("page", ++pageNumber);
                     fetchXml.SetAttributeValue("paging-cookie", results.PagingCookie);
                     fe.Query = fetchXml.ToString();
                 }
