@@ -3,7 +3,6 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
-using System.Linq;
 
 internal class DataverseService(IOrganizationService service, ICacheService cache, ILoggingService logger) : IDataverseService
 {
@@ -39,8 +38,6 @@ internal class DataverseService(IOrganizationService service, ICacheService cach
         logger.LogDebug("Create Entity:");
         logger.LogDebug(entity);
 
-        ConvertEnums(entity);
-
         return service.Create(entity);
     }
 
@@ -48,8 +45,6 @@ internal class DataverseService(IOrganizationService service, ICacheService cach
     {
         logger.LogDebug("Update Entity:");
         logger.LogDebug(entity);
-
-        ConvertEnums(entity);
 
         service.Update(entity);
     }
@@ -97,26 +92,18 @@ internal class DataverseService(IOrganizationService service, ICacheService cach
     {
         logger.LogDebug("Executing Request: {0}", request.GetType().FullName);
 
+        if (request is IDataverseCachedRequest<TResponse> cachedRequest)
+        {
+            return cache.GetOrAdd(cachedRequest.CacheKey, () => request.Execute(this, logger), cachedRequest.CacheDuration);
+        }
+
         return request.Execute(this, logger);
     }
 
-    public TResponse? ExecuteCached<TResponse>(IDataverseCachedRequest<TResponse> request)
+    public TResponse ExecuteWithoutCache<TResponse>(IDataverseCachedRequest<TResponse> request)
     {
-        logger.LogDebug("Executing Cached Request: {0}", request.GetType().FullName);
+        logger.LogDebug("Executing Request: {0} (Without Cache)", request.GetType().FullName);
 
-        return cache.GetOrAdd(request.CacheKey, () => request.Execute(this, logger), request.CacheDuration);
-    }
-
-    /// <summary>
-    /// Convert Enums to OptionSetValues
-    /// </summary>
-    /// <param name="entity">The entity to convert.</param>
-    private void ConvertEnums(Entity entity)
-    {
-        var attributes = entity.Attributes.Where(x => x.Value.GetType().IsEnum);
-        foreach (var attribute in attributes)
-        {
-            entity[attribute.Key] = new OptionSetValue(Convert.ToInt32(attribute.Value));
-        }
+        return request.Execute(this, logger);
     }
 }

@@ -27,5 +27,5 @@ public interface IDataverseService : IOrganizationService
     /// <typeparam name="TResponse">Type of the response.</typeparam>
     /// <param name="request">Request to execute.</param>
     /// <returns>Response object returned by the request.</returns>
-    TResponse? ExecuteCached<TResponse>(IDataverseCachedRequest<TResponse> request);
+    TResponse ExecuteWithoutCache<TResponse>(IDataverseCachedRequest<TResponse> request);
 }

@@ -19,10 +19,12 @@ internal class PluginRegistrationService(IPluginExecutionContext executionContex
         // Check if a Registration matches the current execution context.
         foreach (var attribute in attributes.Cast<RegistrationAttribute>())
         {
-            var isValid = attribute.Mode == executionContext.Mode &&
-                          attribute.Stage == executionContext.Stage &&
-                          attribute.Message == executionContext.MessageName &&
-                          attribute.EntityName == executionContext.PrimaryEntityName;
+            var isValid = true;
+
+            isValid &= attribute.Mode == executionContext.Mode;
+            isValid &= attribute.Stage == executionContext.Stage;
+            isValid &= attribute.Message == executionContext.MessageName;
+            isValid &= attribute.EntityName == null || attribute.EntityName == executionContext.PrimaryEntityName;
 
             if (isValid)
             {
@@ -30,6 +32,7 @@ internal class PluginRegistrationService(IPluginExecutionContext executionContex
             }
         }
 
+        // Didn't match any registrations, hence it failed validation.
         return false;
     }
 }

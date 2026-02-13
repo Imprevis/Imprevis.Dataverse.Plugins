@@ -50,12 +50,66 @@ public class CacheServiceTests
     }
 
     [Fact]
-    public void GetOrAdd_ShouldAddNullValues()
+    public void TryGet_ShouldReturnFalseWhenKeyNotFound()
+    {
+        var cacheKey = Guid.NewGuid().ToString();
+        var exists = cache.TryGet(cacheKey, out Guid value);
+
+        Assert.False(exists);
+        Assert.Equal(default, value);
+    }
+
+    [Fact]
+    public void TryGet_ShouldReturnTrueWhenKeyExists()
+    {
+        var cacheKey = Guid.NewGuid().ToString();
+        var expectedValue = Guid.NewGuid();
+
+        cache.Set(cacheKey, expectedValue, TimeSpan.FromMinutes(1));
+        var exists = cache.TryGet(cacheKey, out Guid value);
+
+        Assert.True(exists);
+        Assert.Equal(expectedValue, value);
+    }
+
+    [Fact]
+    public void GetOrDefault_ShouldReturnDefaultWhenKeyNotFound()
+    {
+        var cacheKey = Guid.NewGuid().ToString();
+        var value = cache.Get<Guid>(cacheKey);
+
+        Assert.Equal(default, value);
+    }
+
+    [Fact]
+    public void GetOrDefault_WithDefaultValue_ShouldReturnDefaultWhenKeyNotFound()
+    {
+        var cacheKey = Guid.NewGuid().ToString();
+        var defaultValue = Guid.NewGuid();
+        var value = cache.Get(cacheKey, defaultValue);
+
+        Assert.Equal(defaultValue, value);
+    }
+
+    [Fact]
+    public void GetOrDefault_ShouldReturnCachedValue()
+    {
+        var cacheKey = Guid.NewGuid().ToString();
+        var expectedValue = Guid.NewGuid();
+
+        cache.Set(cacheKey, expectedValue, TimeSpan.FromMinutes(1));
+        var value = cache.Get<Guid>(cacheKey);
+
+        Assert.Equal(expectedValue, value);
+    }
+
+    [Fact]
+    public void Set_ShouldAllowNullValues()
     {
         var cacheKey = Guid.NewGuid().ToString();
 
-        cache.GetOrAdd(cacheKey, (string)null, TimeSpan.FromMinutes(1));
-        var exists = cache.Get(cacheKey, out string value);
+        cache.Set<string>(cacheKey, null, TimeSpan.FromMinutes(1));
+        var exists = cache.TryGet<string>(cacheKey, out var value);
 
         Assert.True(exists);
         Assert.Null(value);
