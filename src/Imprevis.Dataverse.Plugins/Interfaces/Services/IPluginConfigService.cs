@@ -3,7 +3,7 @@ namespace Imprevis.Dataverse.Plugins;
 /// <summary>
 /// Interface for a service that provides access to plugin configuration settings.
 /// </summary>
-internal interface IPluginConfigService
+public interface IPluginConfigService
 {
     /// <summary>
     /// Gets the unsecure configuration settings for the plugin.
